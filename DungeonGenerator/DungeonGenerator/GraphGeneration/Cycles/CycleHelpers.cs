@@ -8,7 +8,7 @@ public static class CycleHelpers
     {
         var cycle = new List<Node>();
 
-        var currentNode = graph.GetNodeOfIndividualType(NodeType.CycleEntrance);
+        var currentNode = graph.GetFirstNodeOfType(NodeType.CycleEntrance);
         if (currentNode == null)
             throw new ArgumentNullException("There is no cycle entrance in the graph. " + currentNode);
         Dfs(currentNode);

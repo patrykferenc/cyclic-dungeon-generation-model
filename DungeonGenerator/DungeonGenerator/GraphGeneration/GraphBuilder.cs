@@ -34,73 +34,120 @@ namespace DungeonGenerator.DungeonGenerator.GraphGeneration
         {
             GenerateStart();
             GenerateCycleStart();
-            GenerateMainCycle();
-
-            // Generate a starting point of the dungeon
+            GenerateMainCycle(2);
+            
             void GenerateStart()
             {
-                var rand = new Random();
-                (int x, int y) coords;
-                do
-                {
-                    coords = (rand.Next(0, _nodesWidth), rand.Next(0, _nodesHeight));
-                } while (_generatedGraph.GetNode(coords) == null 
-                    || _generatedGraph.GetNode(coords)!.GetNodeType() == NodeType.Empty); // this is actually safe
-                _generatedGraph.SetNodeType(coords, NodeType.Start);
-                
-                Console.Write("Ayo: \n" + _generatedGraph + '\n'); // DEBUG!
+                var undecided = _generatedGraph.GetAllNodesOfType(NodeType.Undecided);
+                GetRandomFromList(undecided).SetNodeType(NodeType.Start);
+
+                Console.Write("After generating start: \n" + _generatedGraph + '\n'); // DEBUG!
             }
-            // Draw a random walk - beginning of the cycle
+            // TODO: Add empty nodes on the outlines to minimise the chance of the generator to get stuck.
             void GenerateCycleStart()
             {
-                var start = _generatedGraph.GetNodeOfIndividualType(NodeType.Start);
+                var start = _generatedGraph.GetFirstNodeOfType(NodeType.Start);
                 if (start == null)
                     throw new ArgumentNullException("Starting node" + start + " can not be null when generating cycle start.");
-                var cycleEntrance = ChooseSkewedUndecidedNodeFromNeighbourhood(start, (_nodesWidth / 2, _nodesHeight / 2));
+                
+                var possible = _generatedGraph.GetNodesInNeighbourhood(start).FindAll(n => n.GetNodeType() == NodeType.Undecided);
+                SortListByClosest(possible, (_nodesWidth / 2, _nodesHeight / 2));
+                
+                var cycleEntrance = possible[0];
                 cycleEntrance.SetNodeType(NodeType.CycleEntrance);
                 Graph.AddEdge(start, cycleEntrance);
+                
+                Console.Write("After generating cycle start: \n" + _generatedGraph + '\n'); // DEBUG!
             }
-            // Add empty nodes and generate a circle (cycle) around them
-            void GenerateMainCycle()
+            
+            void GenerateMainCycle(int minimalIterations)
             {
-                // TODO: Make generating nodes more intelligent, for now it is like so
+                AddEmptyNodes();
 
-                // Randomly add two empty nodes
-                var cycleStart = _generatedGraph.GetNodeOfIndividualType(NodeType.CycleEntrance);
-                if (cycleStart == null)
-                    throw new ArgumentNullException("Cycle start" + cycleStart + " can not be null when generating cycle.");
-                var emptyNode = ChooseRandomNodeFromNeighbourhood(_nodesWidth / 2, _nodesHeight / 2, true);
-                emptyNode.SetNodeType(NodeType.Empty);
-
-                // Generate the cycle
-                Console.Write(_generatedGraph.ToString() + '\n'); // Debug
-                var nextNodeInLine = ChooseRandomNodeFromNeighbourhood(cycleStart, false); // THIS CAN THROW EXCEPTION
-                var tempNode = cycleStart;
-                const int minimalIterations = 2;
-                var iteration = 0;
-                while (iteration < minimalIterations || !_generatedGraph.AreNodesInNeighbourhood(cycleStart, nextNodeInLine))
+                var last = GenerateWanderingPath(minimalIterations);
+                CloseCycle(last);
+                GenerateGoal();
+                
+                void AddEmptyNodes()
                 {
-                    nextNodeInLine.SetNodeType(NodeType.Cycle);
-                    Graph.AddEdge(tempNode, nextNodeInLine);
-                    tempNode = nextNodeInLine;
-                    nextNodeInLine = ChooseSkewedUndecidedNodeFromNeighbourhood(nextNodeInLine, cycleStart.GetNodeXY());
-                    iteration++;
+                 var emptyNode = GetRandomFromList(_generatedGraph
+                     .GetNodesInNeighbourhood((_nodesWidth / 2, _nodesHeight / 2))
+                     .FindAll(n => n.GetNodeType() == NodeType.Undecided));
+                 emptyNode.SetNodeType(NodeType.Empty);
                 }
-                Graph.AddEdge(tempNode, nextNodeInLine);
-                nextNodeInLine.SetNodeType(NodeType.Cycle);
-                Graph.AddEdge(cycleStart, nextNodeInLine);
+                
+                Node GenerateWanderingPath(int maxIterations)
+                {
+                    var cycleStart = _generatedGraph.GetFirstNodeOfType(NodeType.CycleEntrance);
+                    if (cycleStart == null)
+                        throw new ArgumentNullException("Cycle start" + cycleStart + " can not be null when generating wandering path.");
 
-                // Choose random node from cycle and add a goal to the random neighbour empty node
-                // and set node as goal
-                _generatedGraph.GetAllNodesOfType(NodeType.Empty).ForEach(n => n.SetNodeType(NodeType.Undecided));
-                var neighbours = _generatedGraph.GetAllNodesOfType(NodeType.Cycle);
-                Random random = new();
-                var randomIndex = random.Next(neighbours.Count);
-                var cycleEnd = neighbours[randomIndex];
-                cycleEnd.SetNodeType(NodeType.CycleTarget);
-                var end = ChooseRandomNodeFromNeighbourhood(cycleEnd, false);
-                end.SetNodeType(NodeType.End);
-                Graph.AddEdge(cycleEnd, end);
+                    // Generate some nodes far from start
+                    var iteration = 0;
+                    var lastNode = cycleStart;
+                    var neighbours = _generatedGraph.GetNodesInNeighbourhood(lastNode).FindAll(n => n.GetNodeType() == NodeType.Undecided);
+                    SortListByFarthest(neighbours, cycleStart.GetNodeXY());
+                    while (iteration < maxIterations)
+                    {
+                        var nextNode = neighbours[0];
+                        nextNode.SetNodeType(NodeType.Cycle);
+                        Graph.AddEdge(lastNode, nextNode);
+
+                        Console.WriteLine("Position of next node: " + nextNode.GetNodeXY());
+                        
+                        lastNode = nextNode;
+                        neighbours = _generatedGraph.GetNodesInNeighbourhood(lastNode).FindAll(n => n.GetNodeType() == NodeType.Undecided);
+                        SortListByFarthest(neighbours, cycleStart.GetNodeXY());
+
+                        iteration++;
+                    }
+                    Console.Write("After generating wandering path: \n" + _generatedGraph + '\n'); // DEBUG!
+                    return lastNode;
+                }
+
+                void CloseCycle(Node startingNode)
+                {
+                    var cycleStart = _generatedGraph.GetFirstNodeOfType(NodeType.CycleEntrance);
+                    if (cycleStart == null)
+                        throw new ArgumentNullException("Cycle start" + cycleStart + " can not be null when closing cycle.");
+                    
+                    // Generate some nodes far from start
+                    var lastNode = startingNode;
+                    var neighbours = _generatedGraph.GetNodesInNeighbourhood(lastNode).FindAll(n => n.GetNodeType() == NodeType.Undecided);
+                    SortListByClosest(neighbours, cycleStart.GetNodeXY());
+                    while (!CanCloseCycle())
+                    {
+                        var nextNode = neighbours[0];
+                        nextNode.SetNodeType(NodeType.Cycle);
+                        Graph.AddEdge(lastNode, nextNode);
+
+                        lastNode = nextNode;
+                        neighbours = _generatedGraph.GetNodesInNeighbourhood(lastNode).FindAll(n => n.GetNodeType() == NodeType.Undecided);
+                        SortListByClosest(neighbours, cycleStart.GetNodeXY());
+                    }
+
+                    Graph.AddEdge(lastNode, cycleStart);
+
+                    bool CanCloseCycle()
+                    {
+                        return _generatedGraph.GetNodesInNeighbourhood(_generatedGraph.GetFirstNodeOfType(NodeType.CycleEntrance)).Contains(lastNode);
+                    }
+                }
+
+                void GenerateGoal()
+                {
+                    _generatedGraph.GetAllNodesOfType(NodeType.Empty).ForEach(n => n.SetNodeType(NodeType.Undecided));
+                    
+                    var neighbours = _generatedGraph.GetAllNodesOfType(NodeType.Cycle);
+                    var cycleEnd = GetRandomFromList(neighbours);
+                    cycleEnd.SetNodeType(NodeType.CycleTarget);
+                    
+                    var end = GetRandomFromList(_generatedGraph.GetNodesInNeighbourhood(cycleEnd).FindAll(n => n.GetNodeType() == NodeType.Undecided));
+                    end.SetNodeType(NodeType.End);
+                    
+                    Graph.AddEdge(cycleEnd, end);
+                }
+                
             }
         }
 
@@ -110,42 +157,31 @@ namespace DungeonGenerator.DungeonGenerator.GraphGeneration
             throw new NotImplementedException();
         }
 
-        private Node ChooseRandomNodeFromNeighbourhood(int x, int y, bool includingCentre)
+        private static T GetRandomFromList<T>(IReadOnlyList<T> list)
         {
-            return ChooseRandomNodeHelper(x, y, includingCentre);
+            var random = new Random();
+            var randomIndex = random.Next(list.Count);
+            return list[randomIndex];
         }
 
-        private Node ChooseRandomNodeFromNeighbourhood(Node n, bool includingCentre)
+        private static void SortListByClosest(List<Node> list, (int x, int y) direction)
         {
-            return ChooseRandomNodeHelper(n.GetNodeXY().x, n.GetNodeXY().y, includingCentre);
+            list.Sort((a, b) =>
+            {
+                var d1 = Math.Pow(a.GetNodeXY().x - direction.x, 2) + Math.Pow(a.GetNodeXY().y - direction.y, 2);
+                var d2 = Math.Pow(b.GetNodeXY().x - direction.x, 2) + Math.Pow(b.GetNodeXY().y - direction.y, 2);
+                return d1.CompareTo(d2);
+            });
         }
 
-        private Node ChooseRandomNodeHelper(int x, int y, bool includingCentre)
+        private static void SortListByFarthest(List<Node> list, (int x, int y) direction)
         {
-            var neighbours = _generatedGraph.GetValidNodesOfType((x, y), NodeType.Undecided, includingCentre);
-
-            if (neighbours.Count == 0)
-                throw new InvalidOperationException("Could not find empty nodes from: " + x + ", " + y + " .");
-            Random random = new();
-            var randomIndex = random.Next(neighbours.Count);
-            return neighbours[randomIndex];
-        }
-
-        private Node ChooseSkewedUndecidedNodeFromNeighbourhood(Node n, (int x, int y) directionXy)
-        {
-            return ChooseSkewedNodeFromNeighbourhoodHelper(n.GetNodeXY(), directionXy);
-        }
-
-        private Node ChooseSkewedNodeFromNeighbourhoodHelper((int x, int y) nodeXy, (int x, int y) directionXy)
-        {
-            var neighbours = _generatedGraph.GetValidNodesOfType(nodeXy, NodeType.Undecided, false);
-
-            // Sort by distance
-            neighbours.OrderBy(n => Math.Sqrt(Math.Pow(n.GetNodeXY().x - directionXy.x, n.GetNodeXY().y - directionXy.y)));
-
-            if (neighbours.Count == 0)
-                throw new InvalidOperationException("Could not find undecided nodes from: " + nodeXy + " .");
-            return neighbours[0];
+            list.Sort((a, b) =>
+            {
+                var d1 = Math.Pow(a.GetNodeXY().x - direction.x, 2) + Math.Pow(a.GetNodeXY().y - direction.y, 2);
+                var d2 = Math.Pow(b.GetNodeXY().x - direction.x, 2) + Math.Pow(b.GetNodeXY().y - direction.y, 2);
+                return d2.CompareTo(d1);
+            });
         }
     }
 }

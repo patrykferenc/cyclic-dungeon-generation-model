@@ -2,51 +2,51 @@
 {
     public class Node
     {
-        private NodeType NodeType;
-        private CoreGameplayElement CoreRoomFunction = CoreGameplayElement.None;
-        private List<Node> AdjacentNodes;
-        private (int x, int y) NodeXY;
+        private NodeType _nodeType;
+        private CoreGameplayElement _coreRoomFunction = CoreGameplayElement.None;
+        private readonly List<Node> _adjacentNodes;
+        private readonly (int x, int y) _nodeXY;
 
         public Node(NodeType roomType, int nodeX, int nodeY)
         {
-            NodeType = roomType;
-            AdjacentNodes = new List<Node>();
-            NodeXY = (nodeX, nodeY);
+            _nodeType = roomType;
+            _adjacentNodes = new List<Node>();
+            _nodeXY = (nodeX, nodeY);
         }
 
         public (int x, int y) GetNodeXY()
         {
-            return NodeXY;
+            return _nodeXY;
         }
 
         public CoreGameplayElement GetCoreGameplayElement()
         {
-            return CoreRoomFunction;
+            return _coreRoomFunction;
         }
 
         public void SetCoreGameplayElement(CoreGameplayElement element)
         {
-            CoreRoomFunction = element;
+            _coreRoomFunction = element;
         }
 
         public void AddNeighbour(Node n)
         {
-            AdjacentNodes.Add(n);
+            _adjacentNodes.Add(n);
         }
 
         public List<Node> GetNeighbours()
         {
-            return AdjacentNodes;
+            return _adjacentNodes;
         }
 
         public NodeType GetNodeType()
         {
-            return NodeType;
+            return _nodeType;
         }
 
         public void SetNodeType(NodeType rt)
         {
-            NodeType = rt;
+            _nodeType = rt;
         }
     }
 }
