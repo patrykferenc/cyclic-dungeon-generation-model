@@ -17,7 +17,7 @@ public static class CycleHelpers
         
         void Dfs(Node startNode)
         {
-            Console.WriteLine("DFS:");
+            //Console.WriteLine("DFS:");
             var visitedNodes = new List<Node>();
             DfsHelper(startNode, visitedNodes);
         }
@@ -28,7 +28,7 @@ public static class CycleHelpers
             if (IsPartOfCycle(n))
                 cycle.Add(n);
 
-            Console.Write(n.GetNodeType() + "->"); 
+            //Console.Write(n.GetNodeType() + "->"); 
             foreach (var neighbour in n.GetNeighbours())
                 if (!visitedNodes.Contains(neighbour))
                     DfsHelper(neighbour, visitedNodes);
@@ -50,6 +50,11 @@ public static class CycleHelpers
     {
         var cycle = GetCycle(graph);
 
+        return GetCycleLengths(cycle);
+    }
+
+    public static (int aLength, int bLength) GetCycleLengths(List<Node> cycle)
+    {
         int aLength = 0, bLength = 0;
         var firstHalf = true;
         foreach (var n in cycle)
@@ -69,5 +74,22 @@ public static class CycleHelpers
         }
 
         return (aLength, bLength);
+    }
+
+    public static List<Node> GetCyclePart(List<Node> cycle, bool isPartA)
+    {
+        var len = GetCycleLengths(cycle);
+        return isPartA ? cycle.GetRange(1, len.aLength) : cycle.GetRange(len.aLength + 1, len.bLength);
+    }
+
+    public static List<Node> GetCyclePart(Graph graph, bool isPartA)
+    {
+        return GetCyclePartHelper(graph, isPartA);
+    }
+
+    private static List<Node> GetCyclePartHelper(Graph graph, bool isPartA)
+    {
+        var len = GetCycleLengths(graph);
+        return isPartA ? GetCycle(graph).GetRange(1, len.aLength) : GetCycle(graph).GetRange(len.aLength  + 1, len.bLength);
     }
 }

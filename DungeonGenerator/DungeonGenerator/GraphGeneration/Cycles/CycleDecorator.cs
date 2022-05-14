@@ -12,9 +12,9 @@ namespace DungeonGenerator.DungeonGenerator.GraphGeneration.Cycles
             _type = type;
         }
 
-        public Graph DecorateCycle(Graph graph)
+        public void DecorateCycle(Graph graph)
         {
-            return _type.Generate(graph);
+            _type.Generate(graph);
         }
 
     }

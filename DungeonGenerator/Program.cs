@@ -1,6 +1,13 @@
-﻿using DungeonGenerator.DungeonGenerator.GraphGeneration;
+﻿using System.Diagnostics;
+using DungeonGenerator.DungeonGenerator;
+using DungeonGenerator.DungeonGenerator.GraphGeneration;
 
-var gb = new GraphBuilder(5, 5);
-var graph = gb.GenerateGraph();
-Console.WriteLine("Generated graph:");
-Console.Write(graph.ToString());
+Stopwatch stopwatch = new Stopwatch();
+stopwatch.Start();
+
+var db = new DungeonBuilder(DungeonTheme.Castle);
+db.Build();
+
+stopwatch.Stop();
+Console.WriteLine("Generated dungeon in {0} ms", stopwatch.ElapsedMilliseconds);
+

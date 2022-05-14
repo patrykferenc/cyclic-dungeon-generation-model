@@ -1,4 +1,5 @@
-﻿using DungeonGenerator.DungeonGenerator.GraphGeneration.Graphs;
+﻿using DungeonGenerator.DungeonGenerator.GraphGeneration.Characteristics;
+using DungeonGenerator.DungeonGenerator.GraphGeneration.Graphs;
 
 namespace DungeonGenerator.DungeonGenerator.GraphGeneration.Cycles
 {
@@ -6,9 +7,26 @@ namespace DungeonGenerator.DungeonGenerator.GraphGeneration.Cycles
     {
         public Graph Generate(Graph graph)
         {
+            var myCycle = CycleHelpers.GetCycle(graph);
             
+            // add obstacles on both paths
+            var partA = CycleHelpers.GetCyclePart(myCycle, true);
+            Console.WriteLine("Dupa 1");
+            var partB = CycleHelpers.GetCyclePart(myCycle, false);
+            Console.WriteLine("Dupa 2");
+            
+            var myObstacle = new Enemy();
+            GraphBuilderHelpers.GetRandomFromList(partA).AddObstacle(myObstacle);
+            myObstacle = new Enemy();
+            GraphBuilderHelpers.GetRandomFromList(partB).AddObstacle(myObstacle);
+            
+            // change to path
+            foreach (var node in myCycle)
+            {
+                node.SetNodeType(NodeType.Path);
+            }
 
-            throw new NotImplementedException();
+            return graph;
         }
     }
 }
