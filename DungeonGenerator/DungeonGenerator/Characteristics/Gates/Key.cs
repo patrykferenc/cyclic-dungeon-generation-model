@@ -1,4 +1,4 @@
-﻿namespace DungeonGenerator.DungeonGenerator.GraphGeneration.Characteristics.Gates;
+﻿namespace DungeonGenerator.DungeonGenerator.Characteristics.Gates;
 
 public abstract class Key
 {

@@ -7,16 +7,16 @@ public class Graph
     // von neumann's neighbourhood
     private static readonly (int x, int y)[] Neighbourhood = { (-1, 0), (0, -1), (1, 0), (0, 1) };
 
-    private readonly Grid _grid;
+    private readonly NodeGrid _nodeGrid;
 
     public Graph(int nodesHeight, int nodesWidth)
     {
-        _grid = new Grid(nodesHeight, nodesWidth);
+        _nodeGrid = new NodeGrid(nodesHeight, nodesWidth);
     }
-    
+
     public (int x, int y) GetDimensions()
     {
-        return _grid.GetDimensions();
+        return _nodeGrid.GetDimensions();
     }
 
     public static void AddEdge(Node startNode, Node endNode)
@@ -29,12 +29,12 @@ public class Graph
 
     public List<Node> GetNodesInNeighbourhood(Node node)
     {
-        return _grid.ToList().FindAll(n => IsPositionInNeighbourhood(n.GetPosition(), node.GetPosition()));
+        return _nodeGrid.ToList().FindAll(n => IsPositionInNeighbourhood(n.GetPosition(), node.GetPosition()));
     }
 
     public List<Node> GetNodesInNeighbourhood((int x, int y) position)
     {
-        return _grid.ToList().FindAll(n => IsPositionInNeighbourhood(n.GetPosition(), position));
+        return _nodeGrid.ToList().FindAll(n => IsPositionInNeighbourhood(n.GetPosition(), position));
     }
 
     public static bool IsNodeInNeighbourhood(Node firstNode, Node secondNode)
@@ -56,24 +56,24 @@ public class Graph
 
     public Node GetNode((int x, int y) position)
     {
-        return _grid.GetNode(position);
+        return _nodeGrid.GetNode(position);
     }
 
     public Node? GetFirstNodeOfType(NodeType type)
     {
-        return _grid.ToList().Find(n => n.GetNodeType() == type);
+        return _nodeGrid.ToList().Find(n => n.GetNodeType() == type);
     }
 
     public List<Node> GetAllNodesOfType(NodeType type)
     {
-        return _grid.ToList().FindAll(n => n.GetNodeType() == type);
+        return _nodeGrid.ToList().FindAll(n => n.GetNodeType() == type);
     }
 
     public override string ToString()
     {
         StringBuilder sb = new();
 
-        sb.Append(_grid);
+        sb.Append(_nodeGrid);
 
         return sb.ToString();
     }
