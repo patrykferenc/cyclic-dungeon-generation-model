@@ -14,7 +14,7 @@ public static class CycleHelpers
         Dfs(currentNode);
 
         return cycle;
-        
+
         void Dfs(Node startNode)
         {
             //Console.WriteLine("DFS:");
@@ -90,6 +90,8 @@ public static class CycleHelpers
     private static List<Node> GetCyclePartHelper(Graph graph, bool isPartA)
     {
         var len = GetCycleLengths(graph);
-        return isPartA ? GetCycle(graph).GetRange(1, len.aLength) : GetCycle(graph).GetRange(len.aLength  + 1, len.bLength);
+        return isPartA
+            ? GetCycle(graph).GetRange(1, len.aLength)
+            : GetCycle(graph).GetRange(len.aLength + 1, len.bLength);
     }
 }

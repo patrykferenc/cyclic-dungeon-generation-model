@@ -2,5 +2,4 @@
 
 public class Enemy : Obstacle
 {
-    
 }

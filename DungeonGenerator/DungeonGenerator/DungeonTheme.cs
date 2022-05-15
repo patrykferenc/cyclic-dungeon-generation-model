@@ -1,3 +1,7 @@
 ﻿namespace DungeonGenerator.DungeonGenerator;
 
-public enum DungeonTheme { Castle, Cave }
+public enum DungeonTheme
+{
+    Castle,
+    Cave
+}

@@ -1,12 +1,8 @@
 ﻿using DungeonGenerator.DungeonGenerator.GraphGeneration.Graphs;
 
-namespace DungeonGenerator.DungeonGenerator.GraphGeneration.Cycles
+namespace DungeonGenerator.DungeonGenerator.GraphGeneration.Cycles;
+
+public interface ICycleType
 {
-
-    public interface ICycleType
-    {
-
-        Graph Generate(Graph graph);
-
-    }
+    Graph Generate(Graph graph);
 }

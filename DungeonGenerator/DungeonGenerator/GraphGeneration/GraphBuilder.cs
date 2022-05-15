@@ -1,165 +1,173 @@
 ﻿using DungeonGenerator.DungeonGenerator.GraphGeneration.Cycles;
 using DungeonGenerator.DungeonGenerator.GraphGeneration.Graphs;
 
-namespace DungeonGenerator.DungeonGenerator.GraphGeneration
+namespace DungeonGenerator.DungeonGenerator.GraphGeneration;
+
+public class GraphBuilder
 {
-    public class GraphBuilder
+    private readonly Graph _generatedGraph;
+    private readonly int _nodesHeight;
+    private readonly int _nodesWidth;
+
+    public GraphBuilder(int nodesHeight, int nodesWidth)
     {
-        private readonly int _nodesHeight;
-        private readonly int _nodesWidth;
-        private readonly Graph _generatedGraph;
+        _nodesHeight = nodesHeight;
+        _nodesWidth = nodesWidth;
+        _generatedGraph = new Graph(_nodesHeight, _nodesWidth);
+    }
 
-        public GraphBuilder(int nodesHeight, int nodesWidth)
+    public Graph Generate()
+    {
+        // First step - add start and end of the graph, generate cycle
+        AddStartAndGoal();
+
+        // Second step - convert the cycle to a chosen type
+        DecorateCycle();
+
+        // Third step (not added now), add 1-2 more cycles
+
+        // Fourth step - add vaults
+
+        return _generatedGraph;
+    }
+
+    private void AddStartAndGoal()
+    {
+        GenerateStart();
+        GenerateCycleStart();
+        GenerateMainCycle(2);
+
+        Console.Write("After generating cycle: \n" + _generatedGraph + '\n');
+
+        void GenerateStart()
         {
-            _nodesHeight = nodesHeight;
-            _nodesWidth = nodesWidth;
-            _generatedGraph = new Graph(_nodesHeight, _nodesWidth);
+            var undecided = _generatedGraph.GetAllNodesOfType(NodeType.Undecided);
+            GraphBuilderHelpers.GetRandomFromList(undecided).SetNodeType(NodeType.Start);
+
+            Console.Write("After generating start: \n" + _generatedGraph + '\n'); // DEBUG!
         }
 
-        public Graph GenerateGraph()
+        void GenerateCycleStart()
         {
-            // First step - add start and end of the graph, generate cycle
-            AddStartAndGoal();
+            var start = _generatedGraph.GetFirstNodeOfType(NodeType.Start);
+            if (start == null)
+                throw new ArgumentNullException("Starting node" + start +
+                                                " can not be null when generating cycle start.");
 
-            // Second step - convert the cycle to a chosen type
-            DecorateCycle();
+            var possible = _generatedGraph.GetNodesInNeighbourhood(start)
+                .FindAll(n => n.GetNodeType() == NodeType.Undecided);
+            GraphBuilderHelpers.SortListByClosest(possible, (_nodesWidth / 2, _nodesHeight / 2));
 
-            // Third step (not added now), add 1-2 more cycles
+            var cycleEntrance = possible[0];
+            cycleEntrance.SetNodeType(NodeType.CycleEntrance);
+            Graph.AddEdge(start, cycleEntrance);
 
-            // Fourth step - add vaults
-
-            return _generatedGraph;
+            Console.Write("After generating cycle start: \n" + _generatedGraph + '\n'); // DEBUG!
         }
 
-        private void AddStartAndGoal()
+        void GenerateMainCycle(int minimalIterations)
         {
-            GenerateStart();
-            GenerateCycleStart();
-            GenerateMainCycle(2);
-            
-            Console.Write("After generating cycle: \n" + _generatedGraph + '\n');
-            
-            void GenerateStart()
+            AddEmptyNodes();
+
+            var last = GenerateWanderingPath(minimalIterations);
+            CloseCycle(last);
+            GenerateGoal();
+
+            void AddEmptyNodes()
             {
-                var undecided = _generatedGraph.GetAllNodesOfType(NodeType.Undecided);
-                GraphBuilderHelpers.GetRandomFromList(undecided).SetNodeType(NodeType.Start);
-
-                Console.Write("After generating start: \n" + _generatedGraph + '\n'); // DEBUG!
+                var emptyNode = GraphBuilderHelpers.GetRandomFromList(_generatedGraph
+                    .GetNodesInNeighbourhood((_nodesWidth / 2, _nodesHeight / 2))
+                    .FindAll(n => n.GetNodeType() == NodeType.Undecided));
+                emptyNode.SetNodeType(NodeType.Empty);
             }
 
-            void GenerateCycleStart()
+            Node GenerateWanderingPath(int maxIterations)
             {
-                var start = _generatedGraph.GetFirstNodeOfType(NodeType.Start);
-                if (start == null)
-                    throw new ArgumentNullException("Starting node" + start + " can not be null when generating cycle start.");
-                
-                var possible = _generatedGraph.GetNodesInNeighbourhood(start).FindAll(n => n.GetNodeType() == NodeType.Undecided);
-                GraphBuilderHelpers.SortListByClosest(possible, (_nodesWidth / 2, _nodesHeight / 2));
-                
-                var cycleEntrance = possible[0];
-                cycleEntrance.SetNodeType(NodeType.CycleEntrance);
-                Graph.AddEdge(start, cycleEntrance);
-                
-                Console.Write("After generating cycle start: \n" + _generatedGraph + '\n'); // DEBUG!
+                var cycleStart = _generatedGraph.GetFirstNodeOfType(NodeType.CycleEntrance);
+                if (cycleStart == null)
+                    throw new ArgumentNullException("Cycle start" + cycleStart +
+                                                    " can not be null when generating wandering path.");
+
+                // Generate some nodes far from start
+                var iteration = 0;
+                var lastNode = cycleStart;
+                var neighbours = _generatedGraph.GetNodesInNeighbourhood(lastNode)
+                    .FindAll(n => n.GetNodeType() == NodeType.Undecided);
+                GraphBuilderHelpers.SortListByFarthest(neighbours, cycleStart.GetPosition());
+                while (iteration < maxIterations)
+                {
+                    var nextNode = neighbours[0];
+                    nextNode.SetNodeType(NodeType.Cycle);
+                    Graph.AddEdge(lastNode, nextNode);
+
+                    lastNode = nextNode;
+                    neighbours = _generatedGraph.GetNodesInNeighbourhood(lastNode)
+                        .FindAll(n => n.GetNodeType() == NodeType.Undecided);
+                    GraphBuilderHelpers.SortListByFarthest(neighbours, cycleStart.GetPosition());
+
+                    iteration++;
+                }
+
+                Console.Write("After generating wandering path: \n" + _generatedGraph + '\n'); // DEBUG!
+                return lastNode;
             }
-            
-            void GenerateMainCycle(int minimalIterations)
+
+            void CloseCycle(Node startingNode)
             {
-                AddEmptyNodes();
+                var cycleStart = _generatedGraph.GetFirstNodeOfType(NodeType.CycleEntrance);
+                if (cycleStart == null)
+                    throw new ArgumentNullException("Cycle start" + cycleStart +
+                                                    " can not be null when closing cycle.");
 
-                var last = GenerateWanderingPath(minimalIterations);
-                CloseCycle(last);
-                GenerateGoal();
-                
-                void AddEmptyNodes()
+                // Generate some nodes far from start
+                var lastNode = startingNode;
+                var neighbours = _generatedGraph.GetNodesInNeighbourhood(lastNode)
+                    .FindAll(n => n.GetNodeType() == NodeType.Undecided);
+                GraphBuilderHelpers.SortListByClosest(neighbours, cycleStart.GetPosition());
+                while (!CanCloseCycle())
                 {
-                 var emptyNode = GraphBuilderHelpers.GetRandomFromList(_generatedGraph
-                     .GetNodesInNeighbourhood((_nodesWidth / 2, _nodesHeight / 2))
-                     .FindAll(n => n.GetNodeType() == NodeType.Undecided));
-                 emptyNode.SetNodeType(NodeType.Empty);
-                }
-                
-                Node GenerateWanderingPath(int maxIterations)
-                {
-                    var cycleStart = _generatedGraph.GetFirstNodeOfType(NodeType.CycleEntrance);
-                    if (cycleStart == null)
-                        throw new ArgumentNullException("Cycle start" + cycleStart + " can not be null when generating wandering path.");
+                    var nextNode = neighbours[0];
+                    nextNode.SetNodeType(NodeType.Cycle);
+                    Graph.AddEdge(lastNode, nextNode);
 
-                    // Generate some nodes far from start
-                    var iteration = 0;
-                    var lastNode = cycleStart;
-                    var neighbours = _generatedGraph.GetNodesInNeighbourhood(lastNode).FindAll(n => n.GetNodeType() == NodeType.Undecided);
-                    GraphBuilderHelpers.SortListByFarthest(neighbours, cycleStart.GetNodeXY());
-                    while (iteration < maxIterations)
-                    {
-                        var nextNode = neighbours[0];
-                        nextNode.SetNodeType(NodeType.Cycle);
-                        Graph.AddEdge(lastNode, nextNode);
-                        
-                        lastNode = nextNode;
-                        neighbours = _generatedGraph.GetNodesInNeighbourhood(lastNode).FindAll(n => n.GetNodeType() == NodeType.Undecided);
-                        GraphBuilderHelpers.SortListByFarthest(neighbours, cycleStart.GetNodeXY());
-
-                        iteration++;
-                    }
-                    Console.Write("After generating wandering path: \n" + _generatedGraph + '\n'); // DEBUG!
-                    return lastNode;
+                    lastNode = nextNode;
+                    neighbours = _generatedGraph.GetNodesInNeighbourhood(lastNode)
+                        .FindAll(n => n.GetNodeType() == NodeType.Undecided);
+                    GraphBuilderHelpers.SortListByClosest(neighbours, cycleStart.GetPosition());
                 }
 
-                void CloseCycle(Node startingNode)
+                Graph.AddEdge(lastNode, cycleStart);
+
+                bool CanCloseCycle()
                 {
-                    var cycleStart = _generatedGraph.GetFirstNodeOfType(NodeType.CycleEntrance);
-                    if (cycleStart == null)
-                        throw new ArgumentNullException("Cycle start" + cycleStart + " can not be null when closing cycle.");
-                    
-                    // Generate some nodes far from start
-                    var lastNode = startingNode;
-                    var neighbours = _generatedGraph.GetNodesInNeighbourhood(lastNode).FindAll(n => n.GetNodeType() == NodeType.Undecided);
-                    GraphBuilderHelpers.SortListByClosest(neighbours, cycleStart.GetNodeXY());
-                    while (!CanCloseCycle())
-                    {
-                        var nextNode = neighbours[0];
-                        nextNode.SetNodeType(NodeType.Cycle);
-                        Graph.AddEdge(lastNode, nextNode);
-
-                        lastNode = nextNode;
-                        neighbours = _generatedGraph.GetNodesInNeighbourhood(lastNode).FindAll(n => n.GetNodeType() == NodeType.Undecided);
-                        GraphBuilderHelpers.SortListByClosest(neighbours, cycleStart.GetNodeXY());
-                    }
-
-                    Graph.AddEdge(lastNode, cycleStart);
-
-                    bool CanCloseCycle()
-                    {
-                        return _generatedGraph
-                            .GetNodesInNeighbourhood(_generatedGraph.GetFirstNodeOfType(NodeType.CycleEntrance) ??
-                                                     throw new InvalidOperationException("Cycle entrance not found in graph.")).Contains(lastNode);
-                    }
+                    return _generatedGraph
+                        .GetNodesInNeighbourhood(_generatedGraph.GetFirstNodeOfType(NodeType.CycleEntrance) ??
+                                                 throw new InvalidOperationException(
+                                                     "Cycle entrance not found in graph.")).Contains(lastNode);
                 }
+            }
 
-                void GenerateGoal()
-                {
-                    _generatedGraph.GetAllNodesOfType(NodeType.Empty).ForEach(n => n.SetNodeType(NodeType.Undecided));
-                    
-                    var neighbours = _generatedGraph.GetAllNodesOfType(NodeType.Cycle);
-                    var cycleEnd = GraphBuilderHelpers.GetRandomFromList(neighbours);
-                    cycleEnd.SetNodeType(NodeType.CycleTarget);
-                    
-                    var end = GraphBuilderHelpers.GetRandomFromList(_generatedGraph
-                        .GetNodesInNeighbourhood(cycleEnd).FindAll(n => n.GetNodeType() == NodeType.Undecided));
-                    end.SetNodeType(NodeType.End);
-                    
-                    Graph.AddEdge(cycleEnd, end);
-                }
-                
+            void GenerateGoal()
+            {
+                _generatedGraph.GetAllNodesOfType(NodeType.Empty).ForEach(n => n.SetNodeType(NodeType.Undecided));
+
+                var neighbours = _generatedGraph.GetAllNodesOfType(NodeType.Cycle);
+                var cycleEnd = GraphBuilderHelpers.GetRandomFromList(neighbours);
+                cycleEnd.SetNodeType(NodeType.CycleTarget);
+
+                var end = GraphBuilderHelpers.GetRandomFromList(_generatedGraph
+                    .GetNodesInNeighbourhood(cycleEnd).FindAll(n => n.GetNodeType() == NodeType.Undecided));
+                end.SetNodeType(NodeType.End);
+
+                Graph.AddEdge(cycleEnd, end);
             }
         }
+    }
 
-        private void DecorateCycle()
-        {
-            var decorator = CycleChooser.BuildDecorator(_generatedGraph);
-            decorator.DecorateCycle(_generatedGraph);
-            Console.Write("After decorating cycle: \n" + _generatedGraph + '\n');
-        }
+    private void DecorateCycle()
+    {
+        var decorator = CycleChooser.BuildDecorator(_generatedGraph);
+        decorator.DecorateCycle(_generatedGraph);
+        Console.Write("After decorating cycle: \n" + _generatedGraph + '\n'); // Debug
     }
 }

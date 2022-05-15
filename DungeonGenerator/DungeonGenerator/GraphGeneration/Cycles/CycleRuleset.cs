@@ -1,9 +1,6 @@
-﻿namespace DungeonGenerator.DungeonGenerator.GraphGeneration.Cycles
+﻿namespace DungeonGenerator.DungeonGenerator.GraphGeneration.Cycles;
+
+public class CycleRuleset
 {
-    public class CycleRuleset
-    {
-
-        //public static CycleType
-
-    }
+    //public static CycleType
 }

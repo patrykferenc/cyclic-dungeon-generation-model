@@ -2,7 +2,7 @@
 
 public abstract class Key
 {
-    private Lock _lock;
+    private readonly Lock _lock;
 
     public Key(Lock myLock)
     {

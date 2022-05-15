@@ -23,8 +23,8 @@ public static class GraphBuilderHelpers
     {
         list.Sort((a, b) =>
         {
-            var d1 = Math.Pow(a.GetNodeXY().x - direction.x, 2) + Math.Pow(a.GetNodeXY().y - direction.y, 2);
-            var d2 = Math.Pow(b.GetNodeXY().x - direction.x, 2) + Math.Pow(b.GetNodeXY().y - direction.y, 2);
+            var d1 = Math.Pow(a.GetPosition().x - direction.x, 2) + Math.Pow(a.GetPosition().y - direction.y, 2);
+            var d2 = Math.Pow(b.GetPosition().x - direction.x, 2) + Math.Pow(b.GetPosition().y - direction.y, 2);
             return d1.CompareTo(d2);
         });
     }
@@ -33,8 +33,8 @@ public static class GraphBuilderHelpers
     {
         list.Sort((a, b) =>
         {
-            var d1 = Math.Pow(a.GetNodeXY().x - direction.x, 2) + Math.Pow(a.GetNodeXY().y - direction.y, 2);
-            var d2 = Math.Pow(b.GetNodeXY().x - direction.x, 2) + Math.Pow(b.GetNodeXY().y - direction.y, 2);
+            var d1 = Math.Pow(a.GetPosition().x - direction.x, 2) + Math.Pow(a.GetPosition().y - direction.y, 2);
+            var d2 = Math.Pow(b.GetPosition().x - direction.x, 2) + Math.Pow(b.GetPosition().y - direction.y, 2);
             return d2.CompareTo(d1);
         });
     }

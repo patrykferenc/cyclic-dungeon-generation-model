@@ -1,7 +1,8 @@
-﻿namespace DungeonGenerator.DungeonGenerator.GraphGeneration.Graphs
+﻿namespace DungeonGenerator.DungeonGenerator.GraphGeneration.Graphs;
+
+public enum CoreGameplayElement
 {
-    public enum CoreGameplayElement
-    {
-        Start, Goal, None
-    }
+    Start,
+    Goal,
+    None
 }

@@ -1,9 +1,5 @@
-﻿namespace DungeonGenerator.DungeonGenerator.GraphGeneration.Cycles
+﻿namespace DungeonGenerator.DungeonGenerator.GraphGeneration.Cycles;
+
+public abstract class AbstractCycle
 {
-    public abstract class AbstractCycle
-    {
-
-
-
-    }
 }

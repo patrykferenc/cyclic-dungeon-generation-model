@@ -1,4 +1,5 @@
 ﻿using DungeonGenerator.DungeonGenerator.GraphGeneration;
+using DungeonGenerator.DungeonGenerator.TilemapGeneration;
 
 namespace DungeonGenerator.DungeonGenerator;
 
@@ -8,15 +9,21 @@ public class DungeonBuilder
 
     public DungeonBuilder(DungeonTheme myTheme)
     {
-        this._myTheme = myTheme;
+        _myTheme = myTheme;
     }
 
     public void Build()
     {
         var gb = new GraphBuilder(5, 5);
-        var graph = gb.GenerateGraph();
+        var graph = gb.Generate();
+        // Used for debug
         Console.WriteLine("Generated graph:");
         Console.Write(graph.ToString());
+
+        var lr = new LowresTilemapBuilder(graph);
+        var lrTilemap = lr.Generate();
+        // Used for debug
+        Console.WriteLine("Generated low-res level:");
+        Console.Write(lrTilemap.ToString());
     }
-    
 }

@@ -1,76 +1,80 @@
 ﻿using System.Text;
 
-namespace DungeonGenerator.DungeonGenerator.GraphGeneration.Graphs
+namespace DungeonGenerator.DungeonGenerator.GraphGeneration.Graphs;
+
+public class Graph
 {
-    public class Graph
+    // von neumann's neighbourhood
+    private static readonly (int x, int y)[] Neighbourhood = { (-1, 0), (0, -1), (1, 0), (0, 1) };
+
+    private readonly Grid _grid;
+
+    public Graph(int nodesHeight, int nodesWidth)
     {
-        // von neumann's neighbourhood
-        private static readonly (int x, int y)[] Neighbourhood = { (-1, 0), (0, -1), (1, 0), (0, 1) };
+        _grid = new Grid(nodesHeight, nodesWidth);
+    }
+    
+    public (int x, int y) GetDimensions()
+    {
+        return _grid.GetDimensions();
+    }
 
-        private readonly Grid _grid;
+    public static void AddEdge(Node startNode, Node endNode)
+    {
+        if (!startNode.GetNeighbours().Contains(endNode))
+            startNode.AddNeighbour(endNode);
+        if (!endNode.GetNeighbours().Contains(startNode))
+            endNode.AddNeighbour(startNode);
+    }
 
-        public Graph(int nodesHeight, int nodesWidth)
+    public List<Node> GetNodesInNeighbourhood(Node node)
+    {
+        return _grid.ToList().FindAll(n => IsPositionInNeighbourhood(n.GetPosition(), node.GetPosition()));
+    }
+
+    public List<Node> GetNodesInNeighbourhood((int x, int y) position)
+    {
+        return _grid.ToList().FindAll(n => IsPositionInNeighbourhood(n.GetPosition(), position));
+    }
+
+    public static bool IsNodeInNeighbourhood(Node firstNode, Node secondNode)
+    {
+        return IsPositionInNeighbourhood(firstNode.GetPosition(), secondNode.GetPosition());
+    }
+
+    public static bool IsPositionInNeighbourhood((int x, int y) firstPosition, (int x, int y) secondPosition)
+    {
+        for (var i = 0; i < Neighbourhood.Length; i++)
         {
-            _grid = new Grid(nodesHeight, nodesWidth);
+            var positionToCheck = (x: firstPosition.x + Neighbourhood[i].x, y: firstPosition.y + Neighbourhood[i].y);
+            if (positionToCheck == secondPosition)
+                return true;
         }
 
-        public static void AddEdge(Node startNode, Node endNode)
-        {
-            if (!startNode.GetNeighbours().Contains(endNode))
-                startNode.AddNeighbour(endNode);
-            if (!endNode.GetNeighbours().Contains(startNode))
-                endNode.AddNeighbour(startNode);
-        }
+        return false;
+    }
 
-        public List<Node> GetNodesInNeighbourhood(Node node)
-        {
-            return _grid.ToList().FindAll(n => IsPositionInNeighbourhood(n.GetNodeXY(), node.GetNodeXY()));
-        }
+    public Node GetNode((int x, int y) position)
+    {
+        return _grid.GetNode(position);
+    }
 
-        public List<Node> GetNodesInNeighbourhood((int x, int y) position)
-        {
-            return _grid.ToList().FindAll(n => IsPositionInNeighbourhood(n.GetNodeXY(), position));
-        }
+    public Node? GetFirstNodeOfType(NodeType type)
+    {
+        return _grid.ToList().Find(n => n.GetNodeType() == type);
+    }
 
-        public static bool IsNodeInNeighbourhood(Node firstNode, Node secondNode)
-        {
-            return IsPositionInNeighbourhood(firstNode.GetNodeXY(), secondNode.GetNodeXY());
-        }
+    public List<Node> GetAllNodesOfType(NodeType type)
+    {
+        return _grid.ToList().FindAll(n => n.GetNodeType() == type);
+    }
 
-        public static bool IsPositionInNeighbourhood((int x, int y) firstPosition, (int x, int y) secondPosition)
-        {
-            for (var i = 0; i < Neighbourhood.Length; i++)
-            {
-                var positionToCheck = (x: firstPosition.x + Neighbourhood[i].x, y: firstPosition.y + Neighbourhood[i].y);
-                if (positionToCheck == secondPosition)
-                    return true;
-            }
+    public override string ToString()
+    {
+        StringBuilder sb = new();
 
-            return false;
-        }
+        sb.Append(_grid);
 
-        public Node GetNode((int x, int y) position)
-        {
-            return _grid.GetNode(position);
-        }
-
-        public Node? GetFirstNodeOfType(NodeType type)
-        {
-            return _grid.ToList().Find(n => n.GetNodeType() == type);
-        }
-
-        public List<Node> GetAllNodesOfType(NodeType type)
-        {
-            return _grid.ToList().FindAll(n => n.GetNodeType() == type);
-        }
-        
-        public override string ToString()
-        {
-            StringBuilder sb = new();
-
-            sb.Append(_grid);
-
-            return sb.ToString();
-        }
+        return sb.ToString();
     }
 }

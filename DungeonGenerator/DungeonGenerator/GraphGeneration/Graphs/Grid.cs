@@ -14,15 +14,11 @@ public class Grid
         _nodesWidth = nodesWidth;
         _grid = new Node[_nodesHeight, _nodesWidth];
         for (var i = 0; i < _nodesHeight; i++)
-        {
-            for (var j = 0; j < _nodesWidth; j++)
-            {
-                _grid[i, j] = new Node(roomType, j, i);
-            }
-        }
+        for (var j = 0; j < _nodesWidth; j++)
+            _grid[i, j] = new Node(roomType, j, i);
     }
-    
-    public (int x, int y) GetGraphDimensions()
+
+    public (int x, int y) GetDimensions()
     {
         return (x: _nodesWidth, y: _nodesHeight);
     }
@@ -34,8 +30,8 @@ public class Grid
 
     private Node GetNodeHelper((int x, int y) position)
     {
-        if (position.x < _grid.GetLength(1) && position.x >= 0 &&
-            position.y < _grid.GetLength(0) && position.y >= 0)
+        if (position.x >= _grid.GetLength(1) && position.x < 0 &&
+            position.y >= _grid.GetLength(0) && position.y < 0)
             throw new ArgumentOutOfRangeException("There is no node to return at: " + position);
         return _grid[position.y, position.x];
     }
@@ -45,12 +41,8 @@ public class Grid
         List<Node> nodes = new();
 
         for (var i = 0; i < _nodesHeight; i++)
-        {
-            for (var j = 0; j < _nodesWidth; j++)
-            {
-                nodes.Add(_grid[i, j]);
-            }
-        }
+        for (var j = 0; j < _nodesWidth; j++)
+            nodes.Add(_grid[i, j]);
 
         return nodes;
     }
@@ -59,7 +51,7 @@ public class Grid
     {
         return firstNode.GetNeighbours().Contains(secondNode);
     }
-    
+
     public override string ToString()
     {
         StringBuilder sb = new();
@@ -71,6 +63,7 @@ public class Grid
                 sb.Append((char)_grid[i, j].GetNodeType());
                 if (j < _nodesWidth - 1) sb.Append(AreNodesConnected(_grid[i, j], _grid[i, j + 1]) ? '-' : ' ');
             }
+
             sb.Append('\n');
             if (i < _nodesHeight - 1)
                 for (var k = 0; k < _nodesWidth; k++)
@@ -80,5 +73,4 @@ public class Grid
 
         return sb.ToString();
     }
-    
 }
