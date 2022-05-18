@@ -1,5 +1,6 @@
 ﻿using DungeonGenerator.DungeonGenerator.GraphGeneration.Graphs;
 using DungeonGenerator.DungeonGenerator.TilemapGeneration.Tilemaps;
+using DungeonGenerator.DungeonGenerator.TilemapGeneration.Tilemaps.LowResolution;
 
 namespace DungeonGenerator.DungeonGenerator.TilemapGeneration;
 
@@ -12,9 +13,9 @@ public class LowResTilemapBuilder
         _graph = graph;
     }
 
-    public Tilemap Generate()
+    public LowResTilemap Generate()
     {
-        var tilemap = new Tilemap(11, 11); // Hardcoded for now
+        var tilemap = new LowResTilemap(11, 11); // Hardcoded for now
         tilemap.MapGraphToTilemap(_graph);
         return tilemap;
     }

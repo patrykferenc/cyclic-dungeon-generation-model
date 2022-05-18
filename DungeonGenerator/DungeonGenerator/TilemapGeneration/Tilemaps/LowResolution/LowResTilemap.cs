@@ -2,11 +2,11 @@
 using DungeonGenerator.DungeonGenerator.DungeonElements;
 using DungeonGenerator.DungeonGenerator.GraphGeneration.Graphs;
 
-namespace DungeonGenerator.DungeonGenerator.TilemapGeneration.Tilemaps;
+namespace DungeonGenerator.DungeonGenerator.TilemapGeneration.Tilemaps.LowResolution;
 
-public class Tilemap : BaseGrid
+public class LowResTilemap : BaseGrid
 {
-    public Tilemap(int height, int width) : base(height, width)
+    public LowResTilemap(int height, int width) : base(height, width)
     {
         var tilemapDimensions = GetDimensions();
 
@@ -31,22 +31,22 @@ public class Tilemap : BaseGrid
 
         void AddDoorsToLowerNeighbour(int graphY, int graphX, int tileX, int tileY)
         {
-            if (graphY < graphDimensions.y - 1 &&
-                NodeGrid.AreNodesConnected(graph.GetNode((graphX, graphY)), graph.GetNode((graphX, graphY + 1))))
-            {
-                var doorTile = new LowResTile(LowresTileType.Door, (x: tileX, y: tileY + 1));
-                Grid[tileY + 1, tileX] = doorTile;
-            }
+            if (graphY >= graphDimensions.y - 1 
+                || !NodeGrid.AreNodesConnected(graph.GetNode((graphX, graphY)), graph.GetNode((graphX, graphY + 1)))) 
+                return;
+            
+            var doorTile = new LowResTile(LowresTileType.Door, (x: tileX, y: tileY + 1));
+            Grid[tileY + 1, tileX] = doorTile;
         }
 
         void AddDoorsToRightNeighbour(int graphX, int graphY, int tileX, int tileY)
         {
-            if (graphX < graphDimensions.x - 1 &&
-                NodeGrid.AreNodesConnected(graph.GetNode((graphX, graphY)), graph.GetNode((graphX + 1, graphY))))
-            {
-                var doorTile = new LowResTile(LowresTileType.Door, (x: tileX + 1, y: tileY));
-                Grid[tileY, tileX + 1] = doorTile;
-            }
+            if (graphX >= graphDimensions.x - 1 
+                || !NodeGrid.AreNodesConnected(graph.GetNode((graphX, graphY)), graph.GetNode((graphX + 1, graphY))))
+                return;
+            
+            var doorTile = new LowResTile(LowresTileType.Door, (x: tileX + 1, y: tileY));
+            Grid[tileY, tileX + 1] = doorTile;
         }
 
         void AddCorrectTileInPlace(int graphX, int graphY, int tileX, int tileY)

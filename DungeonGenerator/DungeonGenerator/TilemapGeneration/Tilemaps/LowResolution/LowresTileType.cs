@@ -1,4 +1,4 @@
-﻿namespace DungeonGenerator.DungeonGenerator.TilemapGeneration.Tilemaps;
+﻿namespace DungeonGenerator.DungeonGenerator.TilemapGeneration.Tilemaps.LowResolution;
 
 public enum LowresTileType
 {

@@ -1,7 +1,7 @@
 ﻿using DungeonGenerator.DungeonGenerator.DungeonElements;
 using DungeonGenerator.DungeonGenerator.GraphGeneration.Graphs;
 
-namespace DungeonGenerator.DungeonGenerator.TilemapGeneration.Tilemaps;
+namespace DungeonGenerator.DungeonGenerator.TilemapGeneration.Tilemaps.LowResolution;
 
 public class LowResTile : BaseDungeonElement
 {
