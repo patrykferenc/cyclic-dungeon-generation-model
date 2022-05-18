@@ -4,7 +4,7 @@ namespace DungeonGenerator.DungeonGenerator.GraphGeneration.Graphs;
 
 public class Node : BaseDungeonElement
 {
-    private readonly List<Node> _adjacentNodes;
+    //private readonly List<Node> _adjacentNodes;
 
     private CoreGameplayElement _coreRoomFunction = CoreGameplayElement.None;
     private NodeType _type;
@@ -12,7 +12,7 @@ public class Node : BaseDungeonElement
     public Node(NodeType roomType, (int x, int y) position) : base(position)
     {
         _type = roomType;
-        _adjacentNodes = new List<Node>();
+        //_adjacentNodes = new List<Node>();
     }
 
     public CoreGameplayElement GetCoreGameplayElement()
@@ -22,12 +22,12 @@ public class Node : BaseDungeonElement
 
     public void AddNeighbour(Node n)
     {
-        _adjacentNodes.Add(n);
+        GetAdjacent().Add(n);
     }
 
     public List<Node> GetNeighbours()
     {
-        return _adjacentNodes;
+        return GetAdjacent().Cast<Node>().ToList();
     }
 
     public NodeType GetNodeType()

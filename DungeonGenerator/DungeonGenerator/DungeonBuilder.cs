@@ -20,7 +20,7 @@ public class DungeonBuilder
         Console.WriteLine("Generated graph:");
         Console.Write(graph.ToString());
 
-        var lr = new LowresTilemapBuilder(graph);
+        var lr = new LowResTilemapBuilder(graph);
         var lrTilemap = lr.Generate();
         // Used for debug
         Console.WriteLine("Generated low-res level:");

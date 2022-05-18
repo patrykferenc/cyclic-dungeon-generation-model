@@ -24,7 +24,7 @@ public class NodeGrid : BaseGrid
         return ToBaseList().Cast<Node>().ToList();
     }
 
-    private static bool AreNodesConnected(Node firstNode, Node secondNode)
+    public static bool AreNodesConnected(Node firstNode, Node secondNode)
     {
         return firstNode.GetNeighbours().Contains(secondNode);
     }

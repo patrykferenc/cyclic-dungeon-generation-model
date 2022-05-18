@@ -2,7 +2,7 @@
 
 public enum LowresTileType
 {
-    Empty = ' ',
+    Empty = '.',
     Room = 'X',
     Door = 'D',
     Corridor = 'C'

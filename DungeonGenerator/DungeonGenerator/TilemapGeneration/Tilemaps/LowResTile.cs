@@ -8,7 +8,7 @@ public class LowResTile : BaseDungeonElement
     private readonly LowresTileType _type;
 
     public LowResTile(BaseDungeonElement baseElement, (int x, int y) position) :
-        base(position, baseElement.GetKeys(), baseElement.GetLocks(), baseElement.GetObstacles())
+        base(position, baseElement.GetKeys(), baseElement.GetLocks(), baseElement.GetObstacles(), baseElement.GetAdjacent())
     {
         _type = DecideTileType((Node)baseElement);
     }
