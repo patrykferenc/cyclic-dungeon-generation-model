@@ -25,5 +25,11 @@ public class DungeonBuilder
         // Used for debug
         Console.WriteLine("Generated low-res level:");
         Console.Write(lrTilemap.ToString());
+        
+        var tilemapBuilder = new TilemapBuilder(graph, lrTilemap);
+        var tilemap = tilemapBuilder.Generate();
+        // Used for debug
+        Console.WriteLine("Generated level:");
+        Console.Write(tilemap.ToString());
     }
 }

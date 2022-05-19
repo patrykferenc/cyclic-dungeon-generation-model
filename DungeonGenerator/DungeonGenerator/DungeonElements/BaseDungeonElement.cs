@@ -22,7 +22,12 @@ public abstract class BaseDungeonElement
         _adjacentElements = new List<BaseDungeonElement>();
     }
 
-    protected BaseDungeonElement((int x, int y) position, List<Key> keys, List<Lock> locks, List<Obstacle> obstacles, List<BaseDungeonElement> adjacent)
+    protected BaseDungeonElement(
+        (int x, int y) position, 
+        List<Key> keys, 
+        List<Lock> locks, 
+        List<Obstacle> obstacles, 
+        List<BaseDungeonElement> adjacent)
     {
         _position = position;
         _keys = keys;
