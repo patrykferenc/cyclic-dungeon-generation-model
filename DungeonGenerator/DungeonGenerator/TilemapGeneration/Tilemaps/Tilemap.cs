@@ -19,10 +19,10 @@ public class Tilemap : BaseGrid
     {
         return (Tile) GetElement(position);
     }
-    
-    public Tile GetTile(Tile tile)
+
+    public void SetTile((int x, int y) position, Tile tile)
     {
-        return GetTile(tile.GetPosition());
+        Grid[position.y, position.x] = tile;
     }
 
     public override string ToString()

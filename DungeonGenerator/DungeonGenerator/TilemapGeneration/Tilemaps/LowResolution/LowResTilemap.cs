@@ -56,6 +56,11 @@ public class LowResTilemap : BaseGrid
         }
     }
 
+    public LowResTile GetTile((int x, int y) position)
+    {
+        return (LowResTile)GetElement(position);
+    }
+
     public override string ToString()
     {
         StringBuilder sb = new();
