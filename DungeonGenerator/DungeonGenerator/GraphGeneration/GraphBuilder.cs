@@ -35,7 +35,7 @@ public class GraphBuilder
     {
         GenerateStart();
         GenerateCycleStart();
-        GenerateMainCycle(2);
+        GenerateMainCycle(3);
 
         Console.Write("After generating cycle: \n" + _generatedGraph + '\n');
 
@@ -151,8 +151,14 @@ public class GraphBuilder
             {
                 _generatedGraph.GetAllNodesOfType(NodeType.Empty).ForEach(n => n.SetNodeType(NodeType.Undecided));
 
-                var neighbours = _generatedGraph.GetAllNodesOfType(NodeType.Cycle);
-                var cycleEnd = GraphBuilderHelpers.GetRandomFromList(neighbours);
+                var cycleStart = _generatedGraph.GetFirstNodeOfType(NodeType.CycleEntrance) ?? throw new NullReferenceException("Cycle start not found in graph.");
+                Node cycleEnd;
+                do
+                {
+                    var neighbours = _generatedGraph.GetAllNodesOfType(NodeType.Cycle);
+                    cycleEnd = GraphBuilderHelpers.GetRandomFromList(neighbours);    
+                } while(Graph.IsNodeInNeighbourhood(cycleEnd, cycleStart));
+
                 cycleEnd.SetNodeType(NodeType.CycleTarget);
 
                 var end = GraphBuilderHelpers.GetRandomFromList(_generatedGraph

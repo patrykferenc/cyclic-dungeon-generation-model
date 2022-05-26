@@ -11,13 +11,13 @@ public static class GraphBuilderHelpers
         return list[randomIndex];
     }
 
-    // TODO: Test this because it seems to throw exceptions
-    public static T GetRandomFromListExcludingEnds<T>(IReadOnlyList<T> list)
+    public static T GetRandomFromListExcludingBeginningEnd<T>(IReadOnlyList<T> list)
     {
         var random = new Random();
         var randomIndex = random.Next(1, list.Count - 1);
         return list[randomIndex];
     }
+ 
 
     public static void SortListByClosest(List<Node> list, (int x, int y) direction)
     {
