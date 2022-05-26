@@ -6,6 +6,9 @@ namespace DungeonGenerator.DungeonGenerator.TilemapGeneration.Tilemaps.LowResolu
 
 public class LowResTilemap : BaseGrid
 {
+    
+    private static readonly (int x, int y)[] Neighbourhood = { (-1, 0), (0, -1), (1, 0), (0, 1) };
+    
     public LowResTilemap(int height, int width) : base(height, width)
     {
         var tilemapDimensions = GetDimensions();
@@ -54,6 +57,29 @@ public class LowResTilemap : BaseGrid
             var tile = new LowResTile(graph.GetNode((graphX, graphY)), (tileX, tileY));
             Grid[tileY, tileX] = tile;
         }
+    }
+    
+    public List<LowResTile> GetNeighbours(LowResTile tile)
+    {
+        var tilemapDimensions = GetDimensions();
+        var neighbours = new List<LowResTile>();
+        
+        var (x, y) = tile.GetPosition();
+        
+        foreach (var (xOffset, yOffset) in Neighbourhood)
+        {
+            var neighbourX = x + xOffset;
+            var neighbourY = y + yOffset;
+            if (neighbourX < 0 || neighbourX >= tilemapDimensions.x || neighbourY < 0 || neighbourY >= tilemapDimensions.y) 
+                continue;
+            var position = (neighbourX, neighbourY);
+            var possibleNeighbour = GetTile(position);
+            if (possibleNeighbour.GetTileType() != LowresTileType.Empty) 
+                neighbours.Add(possibleNeighbour);
+            
+        }
+
+        return neighbours;
     }
 
     public LowResTile GetTile((int x, int y) position)

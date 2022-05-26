@@ -8,6 +8,7 @@ namespace DungeonGenerator.DungeonGenerator.TilemapGeneration.Tilemaps;
 public class Tile : BaseDungeonElement
 {
 
+    private Room _belongingRoom;
     private TileType _type;
     
     public Tile(TileType type, (int x, int y) position) : base(position)
@@ -22,7 +23,7 @@ public class Tile : BaseDungeonElement
         List<BaseDungeonElement> adjacent) 
         : base(position, keys, locks, obstacles, adjacent)
     {
-        // TODO: Implement the constructor...
+        
     }
 
     public override string ToString()
@@ -31,4 +32,15 @@ public class Tile : BaseDungeonElement
         sb.Append((char)_type);
         return sb.ToString();
     }
+    
+    public void SetTileType(TileType type)
+    {
+        _type = type;
+    }
+    
+    public TileType GetTileType()
+    {
+        return _type;
+    }
+    
 }
