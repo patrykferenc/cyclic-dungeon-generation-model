@@ -95,14 +95,47 @@ public class TilemapBuilder
         {
             if (area is Door door)
             {
-                ShrinkDoorSpaceToOneDoor(door);
-                
+                var deletedTiles = ShrinkDoorSpaceToOneDoor(door);
+                AddRemovedTilesToNeighbouringRooms(deletedTiles, door);
             }
             
         }
     }
     
-    private static void ShrinkDoorSpaceToOneDoor(Door doorSpace)
+    private void AddRemovedTilesToNeighbouringRooms(List<Tile> deletedTiles, Door door)
+    {
+        var connectedRooms = door.GetConnectedAreas();
+        var connectedRoomAbove = connectedRooms.Find(r => r.GetPosition().y < door.GetPosition().y);
+        var connectedRoomBelow = connectedRooms.Find(r => r.GetPosition().y > door.GetPosition().y);
+        var connectedRoomLeft = connectedRooms.Find(r => r.GetPosition().x < door.GetPosition().x);
+        var connectedRoomRight = connectedRooms.Find(r => r.GetPosition().x > door.GetPosition().x);
+
+        foreach (var tile in deletedTiles)
+        {
+            if (connectedRoomAbove != null && tile.GetPosition().y > door.GetPosition().y)
+            {
+                tile.SetTileType(TileType.Space);
+                connectedRoomAbove.GetTiles().Add(tile);
+            }
+            else if (connectedRoomBelow != null && tile.GetPosition().y < door.GetPosition().y)
+            {
+                tile.SetTileType(TileType.Space);
+                connectedRoomBelow.GetTiles().Add(tile);
+            }
+            else if (connectedRoomLeft != null && tile.GetPosition().x < door.GetPosition().x)
+            {
+                tile.SetTileType(TileType.Space);
+                connectedRoomLeft.GetTiles().Add(tile);
+            }
+            else if (connectedRoomRight != null && tile.GetPosition().x > door.GetPosition().x)
+            {
+                tile.SetTileType(TileType.Space);
+                connectedRoomRight.GetTiles().Add(tile);
+            }
+        }
+    }
+
+    private static List<Tile> ShrinkDoorSpaceToOneDoor(Door doorSpace)
     {
         var doorTilesToRemove = new List<Tile>();
         foreach (var tile in doorSpace.GetTiles())
@@ -114,6 +147,7 @@ public class TilemapBuilder
             }
         }
         doorSpace.GetTiles().RemoveAll(doorTilesToRemove.Contains);
+        return doorTilesToRemove;
     }
     
     private List<Tile> FillSpaceWithElements(int tileX, int tileY, LowResTile lrTile)
