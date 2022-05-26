@@ -35,7 +35,7 @@ public class GraphBuilder
     {
         GenerateStart();
         GenerateCycleStart();
-        GenerateMainCycle(3);
+        GenerateMainCycle(2);
 
         Console.Write("After generating cycle: \n" + _generatedGraph + '\n');
 
@@ -160,7 +160,7 @@ public class GraphBuilder
                 } while(Graph.IsNodeInNeighbourhood(cycleEnd, cycleStart));
 
                 cycleEnd.SetNodeType(NodeType.CycleTarget);
-
+                // TODO: fix situation when cycleEnd is blocked and has no empty neighbours
                 var end = GraphBuilderHelpers.GetRandomFromList(_generatedGraph
                     .GetNodesInNeighbourhood(cycleEnd).FindAll(n => n.GetNodeType() == NodeType.Undecided));
                 end.SetNodeType(NodeType.End);
