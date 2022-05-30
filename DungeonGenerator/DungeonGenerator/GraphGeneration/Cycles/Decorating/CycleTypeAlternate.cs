@@ -1,11 +1,11 @@
 ﻿using DungeonGenerator.DungeonGenerator.Characteristics.Obstacles;
 using DungeonGenerator.DungeonGenerator.GraphGeneration.Graphs;
 
-namespace DungeonGenerator.DungeonGenerator.GraphGeneration.Cycles;
+namespace DungeonGenerator.DungeonGenerator.GraphGeneration.Cycles.Decorating;
 
-public class CycleAlternate : AbstractCycle, ICycleType
+public class CycleTypeAlternate : BaseCycleType, ICycleType
 {
-    public Graph Generate(Graph graph)
+    public void Decorate(Graph graph)
     {
         var myCycle = CycleHelpers.GetCycle(graph);
 
@@ -20,7 +20,5 @@ public class CycleAlternate : AbstractCycle, ICycleType
 
         // change to path
         foreach (var node in myCycle) node.SetNodeType(NodeType.Path);
-
-        return graph;
     }
 }

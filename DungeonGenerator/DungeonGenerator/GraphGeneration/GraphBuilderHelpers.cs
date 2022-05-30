@@ -30,4 +30,88 @@ public static class GraphBuilderHelpers
             return d2.CompareTo(d1);
         });
     }
+    
+    // Find a path of nodes that are emptyType using the A* algorithm
+    public static List<Node> FindPath(Node start, Node end, Graph graph, List<NodeType> nodesToAvoid)
+    {
+        var openList = new List<Node>();
+        var closedList = new List<Node>();
+        var cameFrom = new Dictionary<Node, Node>();
+        var gScore = new Dictionary<Node, float>();
+        var fScore = new Dictionary<Node, float>();
+
+        openList.Add(start);
+        gScore[start] = 0;
+        fScore[start] = gScore[start] + Heuristic(start, end);
+
+        while (openList.Count > 0)
+        {
+            var current = GetLowestFScore(openList, fScore);
+            if (current == end)
+            {
+                return ReconstructPath(cameFrom, current);
+            }
+
+            openList.Remove(current);
+            closedList.Add(current);
+
+            foreach (var neighbor in graph.GetNodesInNeighbourhood(current))
+            {
+                if (closedList.Contains(neighbor) || nodesToAvoid.Contains(neighbor.GetNodeType()))
+                {
+                    continue;
+                }
+
+                var tentativeGScore = gScore[current] + 1;
+                if (!openList.Contains(neighbor))
+                {
+                    openList.Add(neighbor);
+                }
+                else if (tentativeGScore >= gScore[neighbor])
+                {
+                    continue;
+                }
+
+                cameFrom[neighbor] = current;
+                gScore[neighbor] = tentativeGScore;
+                fScore[neighbor] = gScore[neighbor] + Heuristic(neighbor, end);
+            }
+        }
+        
+        return new List<Node>();
+    }
+
+    private static float Heuristic(Node start, Node end)
+    {
+        return Math.Abs(start.GetPosition().x - end.GetPosition().x) + Math.Abs(start.GetPosition().y - end.GetPosition().y);
+    }
+    
+    private static List<Node> ReconstructPath(Dictionary<Node, Node> cameFrom, Node current)
+    {
+        var path = new List<Node> { current };
+        while (cameFrom.ContainsKey(current))
+        {
+            current = cameFrom[current];
+            path.Add(current);
+        }
+
+        path.Reverse();
+        return path;
+    }
+    
+    private static Node GetLowestFScore(List<Node> openList, Dictionary<Node, float> fScore)
+    {
+        var lowest = openList[0];
+        foreach (var node in openList)
+        {
+            if (fScore[node] < fScore[lowest])
+            {
+                lowest = node;
+            }
+        }
+
+        return lowest;
+    }
+    
+    
 }
