@@ -1,4 +1,5 @@
-﻿using DungeonGenerator.DungeonGenerator.GraphGeneration.Graphs;
+﻿using DungeonGenerator.DungeonGenerator.DungeonElements;
+using DungeonGenerator.DungeonGenerator.GraphGeneration.Graphs;
 
 namespace DungeonGenerator.DungeonGenerator.GraphGeneration;
 
@@ -30,8 +31,7 @@ public static class GraphBuilderHelpers
             return d2.CompareTo(d1);
         });
     }
-    
-    // Find a path of nodes that are emptyType using the A* algorithm
+
     public static List<Node> FindPath(Node start, Node end, Graph graph, List<NodeType> nodesToAvoid)
     {
         var openList = new List<Node>();
@@ -81,12 +81,12 @@ public static class GraphBuilderHelpers
         return new List<Node>();
     }
 
-    private static float Heuristic(Node start, Node end)
+    private static float Heuristic(BaseDungeonElement start, BaseDungeonElement end)
     {
         return Math.Abs(start.GetPosition().x - end.GetPosition().x) + Math.Abs(start.GetPosition().y - end.GetPosition().y);
     }
     
-    private static List<Node> ReconstructPath(Dictionary<Node, Node> cameFrom, Node current)
+    private static List<Node> ReconstructPath(IReadOnlyDictionary<Node, Node> cameFrom, Node current)
     {
         var path = new List<Node> { current };
         while (cameFrom.ContainsKey(current))
@@ -99,7 +99,7 @@ public static class GraphBuilderHelpers
         return path;
     }
     
-    private static Node GetLowestFScore(List<Node> openList, Dictionary<Node, float> fScore)
+    private static Node GetLowestFScore(List<Node> openList, IReadOnlyDictionary<Node, float> fScore)
     {
         var lowest = openList[0];
         foreach (var node in openList)

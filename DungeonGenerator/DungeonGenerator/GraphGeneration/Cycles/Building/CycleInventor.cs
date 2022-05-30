@@ -5,16 +5,16 @@ namespace DungeonGenerator.DungeonGenerator.GraphGeneration.Cycles.Building;
 public class CycleInventor
 {
     
-    private readonly IBaseCycleVariant _variant;
+    private readonly ICycleVariant _variant;
     
-    public CycleInventor(IBaseCycleVariant variant)
+    public CycleInventor(ICycleVariant variant)
     {
         _variant = variant;
     }
     
-    public void InventCycle(Graph graph)
+    public void InventCycle()
     {
-        _variant.Generate(graph);
+        _variant.Generate();
     }
 
 }

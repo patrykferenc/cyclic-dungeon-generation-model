@@ -1,11 +1,14 @@
-﻿namespace DungeonGenerator.DungeonGenerator.GraphGeneration.Cycles.Building;
+﻿using DungeonGenerator.DungeonGenerator.GraphGeneration.Graphs;
+
+namespace DungeonGenerator.DungeonGenerator.GraphGeneration.Cycles.Building;
 
 public class CycleInventorBuilder
 {
-    
-    public static CycleInventor Build()
+
+    public static CycleInventor Build(Graph graph)
     {
-        return new CycleInventor(new SimpleCycle());
+        
+        return new CycleInventor(new SimpleCycle(graph));
     }
     
 }

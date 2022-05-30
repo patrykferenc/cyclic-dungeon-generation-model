@@ -24,18 +24,20 @@ public class GraphBuilder
 
     private void GenerateBaseCycle()
     {
-        var builder = CycleInventorBuilder.Build();
-        builder.InventCycle(_generatedGraph);
+        var builder = CycleInventorBuilder.Build(_generatedGraph);
         
-        Console.Write("After generating cycle: \n" + _generatedGraph + '\n'); // Debug
+        builder.InventCycle();
+        
+        Console.Write("After generating cycle: \n" + _generatedGraph + '\n'); // Debug!
     }
     
     private void DecorateCycle()
     {
         var decorator = CycleDecoratorBuilder.Build(_generatedGraph);
+        
         decorator.DecorateCycle(_generatedGraph);
         
-        Console.Write("After decorating cycle: \n" + _generatedGraph + '\n'); // Debug
+        Console.Write("After decorating cycle: \n" + _generatedGraph + '\n'); // Debug!
     }
 
 }
