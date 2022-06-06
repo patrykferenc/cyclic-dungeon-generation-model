@@ -3,23 +3,19 @@ using DungeonGenerator.DungeonGenerator.GraphGeneration.Graphs;
 
 namespace DungeonGenerator.DungeonGenerator.GraphGeneration.Cycles.Decorating;
 
-public class CycleTypeAlternate : BaseCycleType, ICycleType
+public class CycleTypePatrolling : BaseCycleType, ICycleType
 {
     public void Decorate(Graph graph)
     {
         var myCycle = CycleHelpers.GetCycle(graph);
 
-        // add obstacles on both paths
+        // add patrolling enemy to one of the rooms
         var partA = CycleHelpers.GetCyclePart(myCycle, true);
-        var partB = CycleHelpers.GetCyclePart(myCycle, false);
 
-        var myObstacle = new Enemy();
+        var myObstacle = new PatrollingEnemy();
         GraphBuilderHelpers.GetRandomFromList(partA).GetObstacles().Add(myObstacle);
-        myObstacle = new Enemy();
-        GraphBuilderHelpers.GetRandomFromList(partB).GetObstacles().Add(myObstacle);
 
         // change to path
-        TurnToPath(myCycle);
+        foreach (var node in myCycle) node.SetNodeType(NodeType.Path);
     }
-    
 }

@@ -13,6 +13,7 @@ public class SimpleCycle : BaseCycleVariant, ICycleVariant
 
     public void Generate()
     {
+        //Console.WriteLine("Simple cycle");
         GenerateDungeonEntrance();
         
         GenerateCycleStart();

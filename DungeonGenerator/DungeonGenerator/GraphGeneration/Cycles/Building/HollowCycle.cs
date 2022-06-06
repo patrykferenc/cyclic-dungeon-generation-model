@@ -5,8 +5,10 @@ namespace DungeonGenerator.DungeonGenerator.GraphGeneration.Cycles.Building;
 public class HollowCycle : BaseCycleVariant, ICycleVariant
 {
     
-    private const int MinHoleSize = 1;
-    private const int MaxHoleSize = 4;
+    private const int WanderingPathLength = 2;
+    
+    private const int MinHoleSize = 2;
+    private const int MaxHoleSize = 5;
     
     public HollowCycle(Graph graph) : base(graph)
     {
@@ -14,6 +16,7 @@ public class HollowCycle : BaseCycleVariant, ICycleVariant
 
     public void Generate()
     {
+        //Console.WriteLine("HollowCycle");
         // Generate a random number of empty nodes
         AddEmptyNodesInTheMiddle();
 
@@ -35,7 +38,9 @@ public class HollowCycle : BaseCycleVariant, ICycleVariant
 
     protected override void GenerateMainCycle()
     {
-        throw new NotImplementedException();
+        var last = GenerateWanderingPath(WanderingPathLength);
+        CloseCycle(last);
+        GenerateGoal();
     }
     
     private void AddEmptyNode()
