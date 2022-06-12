@@ -1,4 +1,5 @@
-﻿using DungeonGenerator.DungeonGenerator.GraphGeneration.Graphs;
+﻿using DungeonGenerator.DungeonGenerator.GraphGeneration.Cycles.Building.Variants;
+using DungeonGenerator.DungeonGenerator.GraphGeneration.Graphs;
 using DungeonGenerator.DungeonGenerator.Utils;
 
 namespace DungeonGenerator.DungeonGenerator.GraphGeneration.Cycles.Building;

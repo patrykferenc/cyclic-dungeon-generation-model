@@ -1,7 +1,7 @@
 ﻿using DungeonGenerator.DungeonGenerator.Characteristics.Obstacles;
 using DungeonGenerator.DungeonGenerator.GraphGeneration.Graphs;
 
-namespace DungeonGenerator.DungeonGenerator.GraphGeneration.Cycles.Decorating;
+namespace DungeonGenerator.DungeonGenerator.GraphGeneration.Cycles.Decorating.Types;
 
 public class CycleTypeAlternate : BaseCycleType, ICycleType
 {

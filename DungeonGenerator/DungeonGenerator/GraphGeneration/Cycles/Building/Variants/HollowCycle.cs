@@ -1,6 +1,6 @@
 ﻿using DungeonGenerator.DungeonGenerator.GraphGeneration.Graphs;
 
-namespace DungeonGenerator.DungeonGenerator.GraphGeneration.Cycles.Building;
+namespace DungeonGenerator.DungeonGenerator.GraphGeneration.Cycles.Building.Variants;
 
 public class HollowCycle : BaseCycleVariant, ICycleVariant
 {
