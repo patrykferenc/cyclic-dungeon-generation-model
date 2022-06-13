@@ -15,7 +15,7 @@ public class LowResTilemap : BaseGrid
 
         for (var y = 0; y < tilemapDimensions.y; y++)
             for (var x = 0; x < tilemapDimensions.x; x++)
-                Grid[y, x] = new LowResTile(LowresTileType.Empty, (x, y));
+                Grid[y, x] = new LowResTile(LowResolutionTileType.Empty, (x, y));
     }
     
     public void MapGraphToTilemap(Graph graph)
@@ -38,7 +38,7 @@ public class LowResTilemap : BaseGrid
                 || !NodeGrid.AreNodesConnected(graph.GetNode((graphX, graphY)), graph.GetNode((graphX, graphY + 1)))) 
                 return;
             
-            var doorTile = new LowResTile(LowresTileType.Door, (x: tileX, y: tileY + 1));
+            var doorTile = new LowResTile(LowResolutionTileType.Door, (x: tileX, y: tileY + 1));
             Grid[tileY + 1, tileX] = doorTile;
         }
 
@@ -48,7 +48,7 @@ public class LowResTilemap : BaseGrid
                 || !NodeGrid.AreNodesConnected(graph.GetNode((graphX, graphY)), graph.GetNode((graphX + 1, graphY))))
                 return;
             
-            var doorTile = new LowResTile(LowresTileType.Door, (x: tileX + 1, y: tileY));
+            var doorTile = new LowResTile(LowResolutionTileType.Door, (x: tileX + 1, y: tileY));
             Grid[tileY, tileX + 1] = doorTile;
         }
 
@@ -74,7 +74,7 @@ public class LowResTilemap : BaseGrid
                 continue;
             var position = (neighbourX, neighbourY);
             var possibleNeighbour = GetTile(position);
-            if (possibleNeighbour.GetTileType() != LowresTileType.Empty) 
+            if (possibleNeighbour.GetTileType() != LowResolutionTileType.Empty) 
                 neighbours.Add(possibleNeighbour);
             
         }

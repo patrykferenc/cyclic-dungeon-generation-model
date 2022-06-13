@@ -5,7 +5,7 @@ namespace DungeonGenerator.DungeonGenerator.TilemapGeneration.Tilemaps.LowResolu
 
 public class LowResTile : BaseDungeonElement
 {
-    private readonly LowresTileType _type;
+    private readonly LowResolutionTileType _type;
 
     public LowResTile(BaseDungeonElement baseElement, (int x, int y) position) :
         base(position, baseElement.GetKeys(), baseElement.GetLocks(), baseElement.GetObstacles(), baseElement.GetAdjacent())
@@ -13,19 +13,19 @@ public class LowResTile : BaseDungeonElement
         _type = DecideTileType((Node)baseElement);
     }
 
-    public LowResTile(LowresTileType type, (int x, int y) position) : base(position)
+    public LowResTile(LowResolutionTileType type, (int x, int y) position) : base(position)
     {
         _type = type;
     }
 
-    public LowresTileType GetTileType()
+    public LowResolutionTileType GetTileType()
     {
         return _type;
     }
 
-    private static LowresTileType DecideTileType(Node node)
+    private static LowResolutionTileType DecideTileType(Node node)
     {
-        LowresTileType type;
+        LowResolutionTileType type;
 
         switch (node.GetNodeType())
         {
@@ -33,11 +33,11 @@ public class LowResTile : BaseDungeonElement
             case NodeType.End:
             case NodeType.Vault:
             case NodeType.Path:
-                type = LowresTileType.Room;
+                type = LowResolutionTileType.Room;
                 break;
             case NodeType.Empty:
             case NodeType.Undecided:
-                type = LowresTileType.Empty;
+                type = LowResolutionTileType.Empty;
                 break;
             default:
                 throw new ArgumentOutOfRangeException("Wrong parameter lmao: " + node.GetNodeType());

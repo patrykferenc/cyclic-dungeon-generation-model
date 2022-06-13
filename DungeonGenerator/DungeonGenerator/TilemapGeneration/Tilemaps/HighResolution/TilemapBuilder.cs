@@ -1,8 +1,9 @@
 ﻿using DungeonGenerator.DungeonGenerator.GraphGeneration.Graphs;
-using DungeonGenerator.DungeonGenerator.TilemapGeneration.Tilemaps;
+using DungeonGenerator.DungeonGenerator.TilemapGeneration.Tilemaps.HighResolution.Rooms;
+using DungeonGenerator.DungeonGenerator.TilemapGeneration.Tilemaps.HighResolution.Tiles;
 using DungeonGenerator.DungeonGenerator.TilemapGeneration.Tilemaps.LowResolution;
 
-namespace DungeonGenerator.DungeonGenerator.TilemapGeneration;
+namespace DungeonGenerator.DungeonGenerator.TilemapGeneration.Tilemaps.HighResolution;
 
 public class TilemapBuilder
 {
@@ -56,18 +57,18 @@ public class TilemapBuilder
     {
         var lrTile = _lowResTilemap.GetTile((lrTilemapX, lrTilemapY));
 
-        if (lrTile.GetTileType() == LowresTileType.Empty)
+        if (lrTile.GetTileType() == LowResolutionTileType.Empty)
             return;
 
         var tilesInSpace = FillSpaceWithElements(tileX, tileY, lrTile);
         
         var middlePosition = (x: tileX + 2, y: tileY + 2);
         
-        if (lrTile.GetTileType() == LowresTileType.Room)
+        if (lrTile.GetTileType() == LowResolutionTileType.Room)
         {
             _areas.Add(new Room(middlePosition, tilesInSpace, lrTile));
         }
-        else if (lrTile.GetTileType() == LowresTileType.Door)
+        else if (lrTile.GetTileType() == LowResolutionTileType.Door)
         {
             _areas.Add(new Door(middlePosition, tilesInSpace, lrTile));
         }
@@ -161,7 +162,7 @@ public class TilemapBuilder
                 var position = (x: tileX + iterationsX, y: tileY + iterationsY);
                 
                 _tilemap.SetTile(position,
-                    lrTile.GetTileType() == LowresTileType.Door
+                    lrTile.GetTileType() == LowResolutionTileType.Door
                         ? new Tile(position: position, type: TileType.Door)
                         : new Tile(position: position, type: TileType.Space));
                 

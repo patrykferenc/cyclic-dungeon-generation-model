@@ -1,14 +1,12 @@
 ﻿using DungeonGenerator.DungeonGenerator.GraphGeneration.Graphs;
-using DungeonGenerator.DungeonGenerator.TilemapGeneration.Tilemaps;
-using DungeonGenerator.DungeonGenerator.TilemapGeneration.Tilemaps.LowResolution;
 
-namespace DungeonGenerator.DungeonGenerator.TilemapGeneration;
+namespace DungeonGenerator.DungeonGenerator.TilemapGeneration.Tilemaps.LowResolution;
 
-public class LowResTilemapBuilder
+public class LowResolutionTilemapBuilder
 {
     private readonly Graph _graph;
 
-    public LowResTilemapBuilder(Graph graph)
+    public LowResolutionTilemapBuilder(Graph graph)
     {
         _graph = graph;
     }

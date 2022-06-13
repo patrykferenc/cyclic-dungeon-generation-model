@@ -1,6 +1,6 @@
 ﻿namespace DungeonGenerator.DungeonGenerator.TilemapGeneration.Tilemaps.LowResolution;
 
-public enum LowresTileType
+public enum LowResolutionTileType
 {
     Empty = '.',
     Room = 'X',

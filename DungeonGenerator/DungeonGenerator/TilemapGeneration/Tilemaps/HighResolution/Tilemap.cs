@@ -1,7 +1,8 @@
 ﻿using System.Text;
 using DungeonGenerator.DungeonGenerator.DungeonElements;
+using DungeonGenerator.DungeonGenerator.TilemapGeneration.Tilemaps.HighResolution.Tiles;
 
-namespace DungeonGenerator.DungeonGenerator.TilemapGeneration.Tilemaps;
+namespace DungeonGenerator.DungeonGenerator.TilemapGeneration.Tilemaps.HighResolution;
 
 public class Tilemap : BaseGrid
 {

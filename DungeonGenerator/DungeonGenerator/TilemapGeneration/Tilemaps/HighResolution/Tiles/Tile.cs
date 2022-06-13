@@ -2,8 +2,9 @@
 using DungeonGenerator.DungeonGenerator.Characteristics.Gates;
 using DungeonGenerator.DungeonGenerator.Characteristics.Obstacles;
 using DungeonGenerator.DungeonGenerator.DungeonElements;
+using DungeonGenerator.DungeonGenerator.TilemapGeneration.Tilemaps.HighResolution.Rooms;
 
-namespace DungeonGenerator.DungeonGenerator.TilemapGeneration.Tilemaps;
+namespace DungeonGenerator.DungeonGenerator.TilemapGeneration.Tilemaps.HighResolution.Tiles;
 
 public class Tile : BaseDungeonElement
 {
