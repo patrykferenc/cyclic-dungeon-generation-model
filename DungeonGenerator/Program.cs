@@ -11,4 +11,4 @@ db.Build();
 stopwatch.Stop();
 Console.WriteLine("Generated dungeon in {0} ms", stopwatch.ElapsedMilliseconds);
 
-Console.WriteLine("Random funny gaussian number: {0}", new ExpandedRandom().NextGaussian());
+//Console.WriteLine("Random funny gaussian number: {0}", new ExpandedRandom().NextGaussian());

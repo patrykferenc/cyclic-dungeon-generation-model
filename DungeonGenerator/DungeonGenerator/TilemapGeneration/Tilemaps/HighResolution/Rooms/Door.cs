@@ -1,7 +1,7 @@
-﻿using DungeonGenerator.DungeonGenerator.TilemapGeneration.Tilemaps.HighResolution.Rooms;
+﻿using DungeonGenerator.DungeonGenerator.TilemapGeneration.Tilemaps.HighResolution.Tiles;
 using DungeonGenerator.DungeonGenerator.TilemapGeneration.Tilemaps.LowResolution;
 
-namespace DungeonGenerator.DungeonGenerator.TilemapGeneration.Tilemaps.HighResolution.Tiles;
+namespace DungeonGenerator.DungeonGenerator.TilemapGeneration.Tilemaps.HighResolution.Rooms;
 
 public class Door : BaseArea
 {
