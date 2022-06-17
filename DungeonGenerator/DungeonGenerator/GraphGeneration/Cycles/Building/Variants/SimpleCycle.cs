@@ -4,20 +4,18 @@ namespace DungeonGenerator.DungeonGenerator.GraphGeneration.Cycles.Building.Vari
 
 public class SimpleCycle : BaseCycleVariant, ICycleVariant
 {
-    
     private const int WanderingPathLength = 2;
-    
+
     public SimpleCycle(Graph graph) : base(graph)
     {
     }
 
     public void Generate()
     {
-        //Console.WriteLine("Simple cycle");
         GenerateDungeonEntrance();
-        
+
         GenerateCycleStart();
-        
+
         GenerateMainCycle();
     }
 
@@ -27,5 +25,4 @@ public class SimpleCycle : BaseCycleVariant, ICycleVariant
         CloseCycle(last);
         GenerateGoal();
     }
-
 }

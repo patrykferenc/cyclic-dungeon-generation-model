@@ -4,9 +4,8 @@ using DungeonGenerator.DungeonGenerator.Utils;
 
 namespace DungeonGenerator.DungeonGenerator.GraphGeneration.Cycles.Building;
 
-public class CycleInventorBuilder
+public static class CycleInventorBuilder
 {
-
     // choose type of cycle based on gaussian distribution
     public static CycleInventor Build(Graph graph)
     {
@@ -18,5 +17,4 @@ public class CycleInventorBuilder
         var cycleVariant = selections.RandomElementByWeight(s => s.Value).Key;
         return new CycleInventor(cycleVariant);
     }
-
 }

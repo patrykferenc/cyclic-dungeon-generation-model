@@ -5,11 +5,10 @@ namespace DungeonGenerator.DungeonGenerator.DungeonElements;
 
 public abstract class BaseDungeonElement
 {
+    private readonly List<BaseDungeonElement> _adjacentElements;
     private readonly List<Key> _keys;
     private readonly List<Lock> _locks;
     private readonly List<Obstacle> _obstacles;
-
-    private readonly List<BaseDungeonElement> _adjacentElements;
 
     private readonly (int x, int y) _position;
 
@@ -23,10 +22,10 @@ public abstract class BaseDungeonElement
     }
 
     protected BaseDungeonElement(
-        (int x, int y) position, 
-        List<Key> keys, 
-        List<Lock> locks, 
-        List<Obstacle> obstacles, 
+        (int x, int y) position,
+        List<Key> keys,
+        List<Lock> locks,
+        List<Obstacle> obstacles,
         List<BaseDungeonElement> adjacent)
     {
         _position = position;

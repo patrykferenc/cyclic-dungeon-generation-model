@@ -6,7 +6,6 @@ namespace DungeonGenerator.DungeonGenerator.TilemapGeneration.Tilemaps.HighResol
 
 public class Tilemap : BaseGrid
 {
-    
     public Tilemap(int height, int width) : base(height, width)
     {
         var tilemapDimensions = GetDimensions();
@@ -15,10 +14,10 @@ public class Tilemap : BaseGrid
             for (var x = 0; x < tilemapDimensions.x; x++)
                 Grid[y, x] = new Tile(TileType.Empty, (x, y));
     }
-    
+
     public Tile GetTile((int x, int y) position)
     {
-        return (Tile) GetElement(position);
+        return (Tile)GetElement(position);
     }
 
     public void SetTile((int x, int y) position, Tile tile)

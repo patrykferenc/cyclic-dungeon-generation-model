@@ -1,112 +1,122 @@
+using DungeonGenerator.DungeonGenerator.TilemapGeneration.Tilemaps.HighResolution.AreaDecorators.Automata;
+using DungeonGenerator.DungeonGenerator.TilemapGeneration.Tilemaps.HighResolution.Rooms;
 using DungeonGenerator.DungeonGenerator.TilemapGeneration.Tilemaps.HighResolution.Tiles;
+using DungeonGenerator.DungeonGenerator.Utils;
 
 namespace DungeonGenerator.DungeonGenerator.TilemapGeneration.Tilemaps.HighResolution.AreaDecorators;
 
 public class CaveDecorator : IAreaDecorator
 {
-    private readonly List<Tile> _roomTiles;
+    private const int MinIterations = 2; // Best over 2
+    private const int MaxIterations = 6; // The higher, the higher chance of smooth caves
+    private readonly ICellularAutomata _cellularAutomata;
 
-    public CaveDecorator(List<Tile> roomTiles)
+    private readonly BaseArea _myArea;
+
+    private readonly ExpandedRandom _random;
+
+    public CaveDecorator(BaseArea area)
     {
-        _roomTiles = roomTiles;
+        _myArea = area;
+        _random = new ExpandedRandom();
+        _cellularAutomata = new Automaton(area.GetTiles());
     }
-    
+
     public void Decorate()
     {
-        var tiles = CreateRoomTiles();
-        
-        // DEBUG: write the tiles in the 2D matrix to the console
-        PrintRoom(tiles);
+        var iterations = _random.Next(MinIterations, MaxIterations);
+        var generatedTileShape = _cellularAutomata.GetFinalState(iterations);
+        ApplyAutomataChanges(generatedTileShape);
     }
 
-    // DEBUG: Display helper method
-    private static void PrintRoom(AutomataTile[,] tiles)
+    private void EnsureRoomStaysConnected()
     {
-        for (var i = 0; i < tiles.GetLength(0); i++)
+        foreach (var area in _myArea.GetConnectedAreas())
         {
-            for (var j = 0; j < tiles.GetLength(1); j++)
-            {
-                Console.Write((char)tiles[i, j]);
-            }
+            var closestTile = _myArea.GetTiles().OrderBy(tile =>
+                    Math.Abs(tile.GetPosition().x - area.GetPosition().x) +
+                    Math.Abs(tile.GetPosition().y - area.GetPosition().y))
+                .First();
 
-            Console.WriteLine();
+            var startingTile = _myArea.GetTiles().Find(tile => tile.GetPosition() == _myArea.GetPosition());
+
+            if (closestTile == null || startingTile == null)
+                throw new Exception("Could not find closest tile or starting tile!");
+
+            var path = FindPath(startingTile, closestTile);
+
+            foreach (var tile in path) tile.SetTileType(TileType.Space);
         }
     }
 
-    private (int maxX, int maxY) GetMaxXAndY()
+    private void ApplyAutomataChanges(AutomataTile[,] automataTiles)
     {
-        var maxX = 0;
-        var maxY = 0;
-        foreach (var tile in _roomTiles)
-        {
-            if (tile.GetPosition().x > maxX)
+        for (var y = 0; y < automataTiles.GetLength(0); y++)
+            for (var x = 0; x < automataTiles.GetLength(1); x++)
             {
-                maxX = tile.GetPosition().x;
+                var offset = _cellularAutomata.GetOffset();
+                var roomTile = _myArea.GetTiles().Find(tile => tile.GetPosition() == (x + offset.x, y + offset.y));
+
+                roomTile?.SetTileType(automataTiles[y, x] == AutomataTile.Floor ? TileType.Space : TileType.Empty);
             }
-            if (tile.GetPosition().y > maxY)
-            {
-                maxY = tile.GetPosition().y;
-            }
-        }
-        return (maxX, maxY);
-    }
-    
-    private (int minX, int minY) GetMinXAndY()
-    {
-        var minX = int.MaxValue;
-        var minY = int.MaxValue;
-        foreach (var tile in _roomTiles)
-        {
-            if (tile.GetPosition().x < minX)
-            {
-                minX = tile.GetPosition().x;
-            }
-            if (tile.GetPosition().y < minY)
-            {
-                minY = tile.GetPosition().y;
-            }
-        }
-        return (minX, minY);
-    }
-    
-    private (int width, int height) GetDimensions()
-    {
-        var min = GetMinXAndY();
-        var max = GetMaxXAndY();
-        var width = max.maxX - min.minX + 1;
-        var height = max.maxY - min.minY + 1;
-        return (width, height);
+
+        EnsureRoomStaysConnected();
+        _myArea.GetTiles().RemoveAll(r => r.GetTileType() == TileType.Empty); // Cleaning up room tiles
     }
 
-    private AutomataTile[,] CreateRoomTiles()
+    private List<Tile> FindPath(Tile start, Tile end)
     {
-        var dimensions = GetDimensions();
-        var offset = GetMinXAndY();
-        var roomTiles2D = new AutomataTile[dimensions.height,dimensions.width];
+        (int x, int y)[] myNeighbourhood = { (-1, 0), (0, -1), (1, 0), (0, 1) };
 
-        // First initialise the matrix with wall tiles.
-        for (var i = 0; i < dimensions.height; i++)
+        var previous = new Dictionary<Tile, Tile?>();
+        var distances = new Dictionary<Tile, int> { { start, 0 } };
+
+        var queue = new PriorityQueue<Tile, int>();
+        foreach (var tile in _myArea.GetTiles())
         {
-            for (var j = 0; j < dimensions.width; j++)
+            if (tile != start)
             {
-                roomTiles2D[i, j] = AutomataTile.Wall;
+                distances.Add(tile, int.MaxValue);
+                previous.Add(tile, null);
+            }
+
+            queue.Enqueue(tile, distances[tile]);
+        }
+
+        while (queue.Count > 0)
+        {
+            var current = queue.Dequeue();
+
+            if (current == end) break;
+
+            foreach (var neighbouring in myNeighbourhood)
+            {
+                (int x, int y) neighbourPosition = (current.GetPosition().x + neighbouring.x,
+                    current.GetPosition().y + neighbouring.y);
+                var neighbour = _myArea.GetTiles().Find(tile => tile.GetPosition() == neighbourPosition);
+                if (neighbour == null) continue;
+
+                var possibleDistance = neighbour.GetTileType() == TileType.Empty
+                    ? distances[current] + 2
+                    : distances[current] + 1; // the edge could be of different value
+
+                if (possibleDistance < distances[neighbour] && distances[current] != int.MaxValue)
+                {
+                    distances[neighbour] = possibleDistance;
+                    previous[neighbour] = current;
+                    queue.Enqueue(neighbour, possibleDistance);
+                }
             }
         }
 
-        // Assign the tile in the correct position.
-        foreach (var tile in _roomTiles)
+        var path = new List<Tile>();
+        var currentTile = end;
+        while (currentTile != start)
         {
-            var tilePosition = (x: tile.GetPosition().x - offset.minX, y: tile.GetPosition().y - offset.minY);
-            
-            roomTiles2D[tilePosition.y, tilePosition.x] = AutomataTile.Floor;
+            path.Add(currentTile);
+            currentTile = previous[currentTile] ?? throw new Exception("No path found");
         }
 
-        return roomTiles2D;
-    }
-
-    private enum AutomataTile
-    {
-        Wall = '#',
-        Floor = '0'
+        return path;
     }
 }

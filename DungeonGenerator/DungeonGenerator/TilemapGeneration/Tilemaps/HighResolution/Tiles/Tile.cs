@@ -8,23 +8,11 @@ namespace DungeonGenerator.DungeonGenerator.TilemapGeneration.Tilemaps.HighResol
 
 public class Tile : BaseDungeonElement
 {
-
-    private Room _belongingRoom;
     private TileType _type;
-    
+
     public Tile(TileType type, (int x, int y) position) : base(position)
     {
         _type = type;
-    }
-
-    public Tile((int x, int y) position,
-        List<Key> keys,
-        List<Lock> locks,
-        List<Obstacle> obstacles,
-        List<BaseDungeonElement> adjacent) 
-        : base(position, keys, locks, obstacles, adjacent)
-    {
-        
     }
 
     public override string ToString()
@@ -33,15 +21,14 @@ public class Tile : BaseDungeonElement
         sb.Append((char)_type);
         return sb.ToString();
     }
-    
+
     public void SetTileType(TileType type)
     {
         _type = type;
     }
-    
+
     public TileType GetTileType()
     {
         return _type;
     }
-    
 }

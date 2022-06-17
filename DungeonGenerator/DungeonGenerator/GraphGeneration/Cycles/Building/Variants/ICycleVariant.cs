@@ -2,7 +2,5 @@
 
 public interface ICycleVariant
 {
-    
     void Generate();
-    
 }

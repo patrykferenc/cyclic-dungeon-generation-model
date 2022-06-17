@@ -21,5 +21,4 @@ public class CycleTypeAlternate : BaseCycleType, ICycleType
         // change to path
         TurnToPath(myCycle);
     }
-    
 }

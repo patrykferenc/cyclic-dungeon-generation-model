@@ -16,7 +16,7 @@ public class GraphBuilder
     public Graph Generate()
     {
         GenerateBaseCycle();
-        
+
         DecorateCycle();
 
         return _generatedGraph;
@@ -25,19 +25,18 @@ public class GraphBuilder
     private void GenerateBaseCycle()
     {
         var builder = CycleInventorBuilder.Build(_generatedGraph);
-        
+
         builder.InventCycle();
-        
-        Console.Write("After generating cycle: \n" + _generatedGraph + '\n'); // Debug!
+
+        //Console.Write("After generating cycle: \n" + _generatedGraph + '\n'); // Debug!
     }
-    
+
     private void DecorateCycle()
     {
         var decorator = CycleDecoratorBuilder.Build(_generatedGraph);
-        
-        decorator.DecorateCycle(_generatedGraph);
-        
-        Console.Write("After decorating cycle: \n" + _generatedGraph + '\n'); // Debug!
-    }
 
+        decorator.DecorateCycle(_generatedGraph);
+
+        //Console.Write("After decorating cycle: \n" + _generatedGraph + '\n'); // Debug!
+    }
 }

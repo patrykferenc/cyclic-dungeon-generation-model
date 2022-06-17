@@ -4,7 +4,6 @@ namespace DungeonGenerator.DungeonGenerator.GraphGeneration.Graphs;
 
 public class Node : BaseDungeonElement
 {
-
     private NodeType _type;
 
     public Node(NodeType roomType, (int x, int y) position) : base(position)

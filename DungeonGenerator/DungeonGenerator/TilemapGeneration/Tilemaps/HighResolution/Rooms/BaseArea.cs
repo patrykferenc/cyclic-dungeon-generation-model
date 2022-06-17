@@ -5,15 +5,12 @@ namespace DungeonGenerator.DungeonGenerator.TilemapGeneration.Tilemaps.HighResol
 
 public abstract class BaseArea
 {
-
-    private readonly (int x, int y) _position;
+    private readonly List<BaseArea> _connectedAreas;
 
     private readonly LowResTile _lowResTile;
 
-    private readonly List<BaseArea> _connectedAreas;
+    private readonly (int x, int y) _position;
 
-    public abstract List<Tile> GetTiles();
-    
     protected BaseArea((int x, int y) position, LowResTile lowResTile)
     {
         _position = position;
@@ -21,24 +18,25 @@ public abstract class BaseArea
         _connectedAreas = new List<BaseArea>();
     }
 
+    public abstract List<Tile> GetTiles();
+
     public void Connect(BaseArea area)
     {
         _connectedAreas.Add(area);
     }
-    
+
     public List<BaseArea> GetConnectedAreas()
     {
         return _connectedAreas;
     }
-    
+
     public (int x, int y) GetPosition()
     {
         return _position;
     }
-    
+
     public LowResTile GetLowResTile()
     {
         return _lowResTile;
     }
-
 }

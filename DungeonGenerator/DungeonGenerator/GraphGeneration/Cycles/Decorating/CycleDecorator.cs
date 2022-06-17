@@ -5,7 +5,6 @@ namespace DungeonGenerator.DungeonGenerator.GraphGeneration.Cycles.Decorating;
 
 public class CycleDecorator
 {
-    
     private readonly ICycleType _type;
 
     public CycleDecorator(ICycleType type)
@@ -17,5 +16,4 @@ public class CycleDecorator
     {
         _type.Decorate(graph);
     }
-    
 }

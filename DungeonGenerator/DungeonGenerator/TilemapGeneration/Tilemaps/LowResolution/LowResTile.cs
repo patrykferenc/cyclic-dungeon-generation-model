@@ -8,7 +8,8 @@ public class LowResTile : BaseDungeonElement
     private readonly LowResolutionTileType _type;
 
     public LowResTile(BaseDungeonElement baseElement, (int x, int y) position) :
-        base(position, baseElement.GetKeys(), baseElement.GetLocks(), baseElement.GetObstacles(), baseElement.GetAdjacent())
+        base(position, baseElement.GetKeys(), baseElement.GetLocks(), baseElement.GetObstacles(),
+            baseElement.GetAdjacent())
     {
         _type = DecideTileType((Node)baseElement);
     }
@@ -40,7 +41,7 @@ public class LowResTile : BaseDungeonElement
                 type = LowResolutionTileType.Empty;
                 break;
             default:
-                throw new ArgumentOutOfRangeException("Wrong parameter lmao: " + node.GetNodeType());
+                throw new ArgumentOutOfRangeException("Wrong parameter during conversion to low-res tile type: " + node.GetNodeType());
         }
 
         return type;

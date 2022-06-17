@@ -4,14 +4,13 @@ namespace DungeonGenerator.DungeonGenerator.GraphGeneration.Cycles.Building.Vari
 
 public abstract class BaseCycleVariant
 {
-    
     protected readonly Graph Graph;
-    
+
     protected BaseCycleVariant(Graph graph)
     {
         Graph = graph;
     }
-    
+
     protected virtual void GenerateDungeonEntrance()
     {
         var undecided = Graph.GetAllNodesOfType(NodeType.Undecided);
@@ -27,10 +26,10 @@ public abstract class BaseCycleVariant
 
         var possible = Graph.GetNodesInNeighbourhood(start)
             .FindAll(n => n.GetNodeType() == NodeType.Undecided);
-        
+
         if (possible.Count == 0)
             throw new ArgumentNullException("No possible nodes in the list " + possible + " to connect to.");
-        
+
         var size = Graph.GetDimensions();
         GraphBuilderHelpers.SortListByClosest(possible, (size.x / 2, size.y / 2));
 
@@ -40,25 +39,26 @@ public abstract class BaseCycleVariant
     }
 
     protected abstract void GenerateMainCycle();
-    
+
     protected virtual void CloseCycle(Node startingNode)
     {
         var cycleStart = Graph.GetFirstNodeOfType(NodeType.CycleEntrance);
         if (cycleStart == null)
             throw new ArgumentNullException("Cycle start" + cycleStart +
                                             " can not be null when closing cycle.");
-            
-        var typesToAvoid = new List<NodeType> {NodeType.Start, NodeType.Empty, NodeType.Cycle};
+
+        var typesToAvoid = new List<NodeType> { NodeType.Start, NodeType.Empty, NodeType.Cycle };
         var nodesToAdd = GraphBuilderHelpers.FindPath(startingNode, cycleStart, Graph, typesToAvoid);
         if (nodesToAdd.Count == 0)
             throw new ArgumentException("No path found when closing cycle.");
-            
+
         // Set nodes to cycle and add edges to consecutive nodes
         for (var i = 0; i < nodesToAdd.Count - 1; i++)
         {
             nodesToAdd[i].SetNodeType(NodeType.Cycle);
             Graph.AddEdge(nodesToAdd[i], nodesToAdd[i + 1]);
         }
+
         var lastNode = nodesToAdd[^1];
         Graph.AddEdge(lastNode, cycleStart);
     }
@@ -77,7 +77,7 @@ public abstract class BaseCycleVariant
         } while (Graph.IsNodeInNeighbourhood(cycleEnd, cycleStart));
 
         cycleEnd.SetNodeType(NodeType.CycleTarget);
-            
+
         // TODO: fix situation when cycleEnd is blocked and has no empty neighbours
         var end = GraphBuilderHelpers.GetRandomFromList(Graph
             .GetNodesInNeighbourhood(cycleEnd).FindAll(n => n.GetNodeType() == NodeType.Undecided));
@@ -85,14 +85,14 @@ public abstract class BaseCycleVariant
 
         Graph.AddEdge(cycleEnd, end);
     }
-    
+
     protected virtual Node GenerateWanderingPath(int maxIterations)
     {
         var cycleStart = Graph.GetFirstNodeOfType(NodeType.CycleEntrance);
         if (cycleStart == null)
             throw new ArgumentNullException("Cycle start" + cycleStart +
                                             " can not be null when generating wandering path.");
-        
+
         var iteration = 0;
         var lastNode = cycleStart;
         var neighbours = Graph.GetNodesInNeighbourhood(lastNode)
@@ -115,5 +115,4 @@ public abstract class BaseCycleVariant
         Console.Write("After generating wandering path: \n" + Graph + '\n'); // DEBUG!
         return lastNode;
     }
-    
 }

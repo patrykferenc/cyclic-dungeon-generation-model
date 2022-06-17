@@ -3,7 +3,7 @@
 public class ExpandedRandom
 {
     private readonly Random _random;
-    
+
     public ExpandedRandom(int seed)
     {
         _random = new Random(seed);
@@ -13,12 +13,12 @@ public class ExpandedRandom
     {
         _random = new Random();
     }
-    
+
     public int Next(int min, int max)
     {
         return _random.Next(min, max);
     }
-    
+
     public int Next(int max)
     {
         return _random.Next(max);
@@ -28,7 +28,12 @@ public class ExpandedRandom
     {
         return _random.Next(0, 2) == 1;
     }
-    
+
+    public bool NextBoolChance(int chance)
+    {
+        return _random.Next(0, 100) < chance;
+    }
+
     public double NextGaussian(double mu = 0, double sigma = 1)
     {
         var u1 = _random.NextDouble();

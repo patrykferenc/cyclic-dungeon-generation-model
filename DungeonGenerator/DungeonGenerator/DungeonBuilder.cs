@@ -1,5 +1,4 @@
 ﻿using DungeonGenerator.DungeonGenerator.GraphGeneration;
-using DungeonGenerator.DungeonGenerator.TilemapGeneration;
 using DungeonGenerator.DungeonGenerator.TilemapGeneration.Tilemaps.HighResolution;
 using DungeonGenerator.DungeonGenerator.TilemapGeneration.Tilemaps.LowResolution;
 
@@ -27,8 +26,8 @@ public class DungeonBuilder
         // Used for debug
         Console.WriteLine("Generated low-res level:");
         Console.Write(lrTilemap.ToString());
-        
-        var tilemapBuilder = new TilemapBuilder(graph, lrTilemap);
+
+        var tilemapBuilder = new TilemapBuilder(lrTilemap);
         var tilemap = tilemapBuilder.Generate();
         // Used for debug
         Console.WriteLine("Generated level:");

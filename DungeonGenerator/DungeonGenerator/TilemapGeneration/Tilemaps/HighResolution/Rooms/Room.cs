@@ -5,29 +5,19 @@ namespace DungeonGenerator.DungeonGenerator.TilemapGeneration.Tilemaps.HighResol
 
 public class Room : BaseArea
 {
-    
-    private readonly RoomType _roomType;
     private readonly List<Tile> _tiles;
 
-    public Room((int x, int y) position, LowResTile lowResTile, RoomType roomType) : base(position, lowResTile)
-    {
-        _roomType = roomType;
-        _tiles = new List<Tile>();
-    }
-
-    public Room((int x, int y) position ,List<Tile> tiles, LowResTile lowResTile, RoomType roomType) : base(position, lowResTile)
+    public Room((int x, int y) position, List<Tile> tiles, LowResTile lowResTile, RoomType roomType) : base(position,
+        lowResTile)
     {
         _tiles = tiles;
-        _roomType = roomType;
+        RoomType = roomType;
     }
 
-    public RoomType RoomType => _roomType;
-    
+    public RoomType RoomType { get; }
+
     public override List<Tile> GetTiles()
     {
         return _tiles;
     }
-    
-    
-    
 }

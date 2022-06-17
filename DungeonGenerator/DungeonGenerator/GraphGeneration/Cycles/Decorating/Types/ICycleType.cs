@@ -5,5 +5,4 @@ namespace DungeonGenerator.DungeonGenerator.GraphGeneration.Cycles.Decorating.Ty
 public interface ICycleType
 {
     void Decorate(Graph graph);
-    
 }

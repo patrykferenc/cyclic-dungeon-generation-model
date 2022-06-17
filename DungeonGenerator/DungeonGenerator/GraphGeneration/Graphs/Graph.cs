@@ -42,6 +42,7 @@ public class Graph
         return IsPositionInNeighbourhood(firstNode.GetPosition(), secondNode.GetPosition());
     }
 
+    // TODO: Rewrite to more modern solution
     public static bool IsPositionInNeighbourhood((int x, int y) firstPosition, (int x, int y) secondPosition)
     {
         for (var i = 0; i < Neighbourhood.Length; i++)

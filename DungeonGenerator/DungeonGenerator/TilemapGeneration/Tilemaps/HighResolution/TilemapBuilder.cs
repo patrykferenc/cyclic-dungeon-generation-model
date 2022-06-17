@@ -1,5 +1,4 @@
-﻿using DungeonGenerator.DungeonGenerator.GraphGeneration.Graphs;
-using DungeonGenerator.DungeonGenerator.TilemapGeneration.Tilemaps.HighResolution.AreaDecorators;
+﻿using DungeonGenerator.DungeonGenerator.TilemapGeneration.Tilemaps.HighResolution.AreaDecorators;
 using DungeonGenerator.DungeonGenerator.TilemapGeneration.Tilemaps.HighResolution.Rooms;
 using DungeonGenerator.DungeonGenerator.TilemapGeneration.Tilemaps.HighResolution.Tiles;
 using DungeonGenerator.DungeonGenerator.TilemapGeneration.Tilemaps.LowResolution;
@@ -8,54 +7,54 @@ namespace DungeonGenerator.DungeonGenerator.TilemapGeneration.Tilemaps.HighResol
 
 public class TilemapBuilder
 {
-    private const int SizeMultiplier = 5; // This works best if it is an odd number!!!
-    
-    private readonly Graph _graph;
-    private readonly LowResTilemap _lowResTilemap;
-    private readonly Tilemap _tilemap;
+    private const int SizeMultiplier = 7; // This works best if it is an odd number!
     private readonly List<BaseArea> _areas;
 
-    public TilemapBuilder(Graph graph, LowResTilemap tilemap)
+    private readonly LowResTilemap _lowResTilemap;
+    private readonly Tilemap _tilemap;
+
+    public TilemapBuilder(LowResTilemap tilemap)
     {
-        _graph = graph;
         _lowResTilemap = tilemap;
+
         var lrDimensions = _lowResTilemap.GetDimensions();
         _tilemap = new Tilemap(lrDimensions.y * SizeMultiplier, lrDimensions.x * SizeMultiplier);
+
         _areas = new List<BaseArea>();
     }
 
     public Tilemap Generate()
     {
         TurnLowResGridToTilemap();
-        
+
         AddNeighbouringAreas();
-        
+
         FixDoorSpaces();
 
+        DecorateRooms();
+
+        return _tilemap;
+    }
+
+    private void DecorateRooms()
+    {
         foreach (var area in _areas)
         {
-            if (area is not Door)
-            {
-                var decorator = new CaveDecorator(area.GetTiles());
-                decorator.Decorate();
-                Console.WriteLine(area.GetPosition());
-            }
+            if (area is Door)
+                continue;
+
+            var decorator = new CaveDecorator(area);
+            decorator.Decorate();
         }
-        
-        return _tilemap;
     }
 
     private void TurnLowResGridToTilemap()
     {
         var lrTilemapDimensions = _lowResTilemap.GetDimensions();
-        
+
         for (int lrTilemapY = 1, tileY = 1; lrTilemapY < lrTilemapDimensions.y; lrTilemapY++, tileY += SizeMultiplier)
-        {
             for (int lrTilemapX = 1, tileX = 1; lrTilemapX < lrTilemapDimensions.x; lrTilemapX++, tileX += SizeMultiplier)
-            {
                 AddRoomFromLowResGrid(lrTilemapX, lrTilemapY, tileX, tileY);
-            }
-        }
     }
 
     private void AddRoomFromLowResGrid(int lrTilemapX, int lrTilemapY, int tileX, int tileY)
@@ -66,17 +65,13 @@ public class TilemapBuilder
             return;
 
         var tilesInSpace = FillSpaceWithElements(tileX, tileY, lrTile);
-        
-        var middlePosition = (x: tileX + SizeMultiplier/2, y: tileY + SizeMultiplier/2);
-        
+
+        var middlePosition = (x: tileX + SizeMultiplier / 2, y: tileY + SizeMultiplier / 2);
+
         if (lrTile.GetTileType() == LowResolutionTileType.Room)
-        {
             _areas.Add(new Room(middlePosition, tilesInSpace, lrTile, RoomType.CastleRoom));
-        }
         else if (lrTile.GetTileType() == LowResolutionTileType.Door)
-        {
             _areas.Add(new Door(middlePosition, tilesInSpace, lrTile));
-        }
     }
 
     private void AddNeighbouringAreas()
@@ -87,10 +82,7 @@ public class TilemapBuilder
             foreach (var lrNeighbour in lrNeighbours)
             {
                 var neighbour = _areas.Find(a => a.GetLowResTile() == lrNeighbour);
-                if (neighbour != null)
-                {
-                    area.Connect(neighbour);
-                }
+                if (neighbour != null) area.Connect(neighbour);
             }
         }
     }
@@ -116,7 +108,6 @@ public class TilemapBuilder
 
         // Need to test this
         foreach (var tile in deletedTiles)
-        {
             if (connectedRoomAbove != null && tile.GetPosition().y < door.GetPosition().y)
             {
                 tile.SetTileType(TileType.Space);
@@ -137,7 +128,6 @@ public class TilemapBuilder
                 tile.SetTileType(TileType.Space);
                 connectedRoomRight.GetTiles().Add(tile);
             }
-        }
     }
 
     private static List<Tile> ShrinkDoorSpaceToOneDoor(BaseArea doorSpace)
@@ -149,28 +139,28 @@ public class TilemapBuilder
             tile.SetTileType(TileType.Empty);
             doorTilesToRemove.Add(tile);
         }
+
         doorSpace.GetTiles().RemoveAll(doorTilesToRemove.Contains);
         return doorTilesToRemove;
     }
-    
+
     private List<Tile> FillSpaceWithElements(int tileX, int tileY, LowResTile lrTile)
     {
         var tiles = new List<Tile>();
-        
-        //const int size = 5;
+
         for (var iterationsY = 0; iterationsY < SizeMultiplier; iterationsY++)
-            for (var iterationsX = 0; iterationsX < SizeMultiplier; iterationsX++)
-            {
-                var position = (x: tileX + iterationsX, y: tileY + iterationsY);
-                
-                _tilemap.SetTile(position,
-                    lrTile.GetTileType() == LowResolutionTileType.Door
-                        ? new Tile(position: position, type: TileType.Door)
-                        : new Tile(position: position, type: TileType.Space));
-                
-                var tile = _tilemap.GetTile(position);
-                tiles.Add(tile);
-            }
+        for (var iterationsX = 0; iterationsX < SizeMultiplier; iterationsX++)
+        {
+            var position = (x: tileX + iterationsX, y: tileY + iterationsY);
+
+            _tilemap.SetTile(position,
+                lrTile.GetTileType() == LowResolutionTileType.Door
+                    ? new Tile(position: position, type: TileType.Door)
+                    : new Tile(position: position, type: TileType.Space));
+
+            var tile = _tilemap.GetTile(position);
+            tiles.Add(tile);
+        }
 
         return tiles;
     }
