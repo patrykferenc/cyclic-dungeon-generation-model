@@ -105,7 +105,7 @@ public class TilemapBuilder
         }
     }
 
-    // This could use some refactoring...
+    // TODO: This could use some refactoring...
     private void AddRemovedTilesToNeighbouringRooms(List<Tile> deletedTiles, BaseArea door)
     {
         var connectedRooms = door.GetConnectedAreas();

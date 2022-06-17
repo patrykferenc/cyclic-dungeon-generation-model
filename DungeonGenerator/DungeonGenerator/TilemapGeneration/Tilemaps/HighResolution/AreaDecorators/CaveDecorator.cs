@@ -13,28 +13,26 @@ public class CaveDecorator : IAreaDecorator
     
     public void Decorate()
     {
-        
-        SortTiles();
         var tiles = CreateRoomTiles();
-        // write the tiles in the 2D matrix to the console
+        
+        // DEBUG: write the tiles in the 2D matrix to the console
+        PrintRoom(tiles);
+    }
+
+    // DEBUG: Display helper method
+    private static void PrintRoom(AutomataTile[,] tiles)
+    {
         for (var i = 0; i < tiles.GetLength(0); i++)
         {
             for (var j = 0; j < tiles.GetLength(1); j++)
             {
                 Console.Write((char)tiles[i, j]);
             }
+
             Console.WriteLine();
         }
+    }
 
-    }
-    
-    // Sort the list of roomTiles by their positions (x,y)
-    private void SortTiles()
-    {
-        _roomTiles.Sort((a, b) => a.GetPosition().CompareTo(b.GetPosition()));
-    }
-    
-    // Get max x and y values of the roomTiles
     private (int maxX, int maxY) GetMaxXAndY()
     {
         var maxX = 0;
@@ -53,7 +51,6 @@ public class CaveDecorator : IAreaDecorator
         return (maxX, maxY);
     }
     
-    // Get min x and y values of the roomTiles
     private (int minX, int minY) GetMinXAndY()
     {
         var minX = int.MaxValue;
@@ -72,7 +69,6 @@ public class CaveDecorator : IAreaDecorator
         return (minX, minY);
     }
     
-    // Get dimensions based on min and max x and y values
     private (int width, int height) GetDimensions()
     {
         var min = GetMinXAndY();
@@ -82,15 +78,13 @@ public class CaveDecorator : IAreaDecorator
         return (width, height);
     }
 
-    // Create a 2D list of tiles that are in the room using their position
     private AutomataTile[,] CreateRoomTiles()
     {
-        
         var dimensions = GetDimensions();
         var offset = GetMinXAndY();
         var roomTiles2D = new AutomataTile[dimensions.height,dimensions.width];
-        //Console.WriteLine(dimensions);
-        // make all roomTiles2D tiles empty
+
+        // First initialise the matrix with wall tiles.
         for (var i = 0; i < dimensions.height; i++)
         {
             for (var j = 0; j < dimensions.width; j++)
@@ -98,8 +92,8 @@ public class CaveDecorator : IAreaDecorator
                 roomTiles2D[i, j] = AutomataTile.Wall;
             }
         }
-        
-        
+
+        // Assign the tile in the correct position.
         foreach (var tile in _roomTiles)
         {
             var tilePosition = (x: tile.GetPosition().x - offset.minX, y: tile.GetPosition().y - offset.minY);
@@ -113,7 +107,6 @@ public class CaveDecorator : IAreaDecorator
     private enum AutomataTile
     {
         Wall = '#',
-        Floor = '0',
-        Blocked
+        Floor = '0'
     }
 }
