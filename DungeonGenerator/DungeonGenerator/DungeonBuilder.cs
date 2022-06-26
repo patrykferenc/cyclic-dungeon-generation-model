@@ -6,7 +6,7 @@ namespace DungeonGenerator.DungeonGenerator;
 
 public class DungeonBuilder
 {
-    private DungeonTheme _myTheme;
+    private readonly DungeonTheme _myTheme;
 
     public DungeonBuilder(DungeonTheme myTheme)
     {
@@ -15,21 +15,21 @@ public class DungeonBuilder
 
     public void Build()
     {
-        var gb = new GraphBuilder(5, 5);
+        var gb = new GraphBuilder(nodesHeight: 5, nodesWidth: 5, theme: _myTheme);
         var graph = gb.Generate();
-        // Used for debug
+        
         Console.WriteLine("Generated graph:");
         Console.Write(graph.ToString());
 
         var lr = new LowResolutionTilemapBuilder(graph);
         var lrTilemap = lr.Generate();
-        // Used for debug
+
         Console.WriteLine("Generated low-res level:");
         Console.Write(lrTilemap.ToString());
 
         var tilemapBuilder = new TilemapBuilder(lrTilemap);
         var tilemap = tilemapBuilder.Generate();
-        // Used for debug
+
         Console.WriteLine("Generated level:");
         Console.Write(tilemap.ToString());
     }

@@ -5,6 +5,7 @@ namespace DungeonGenerator.DungeonGenerator.TilemapGeneration.Tilemaps.LowResolu
 public class LowResolutionTilemapBuilder
 {
     private readonly Graph _graph;
+    private const int SizeMultiplier = 2; // This can not be a different number as we are doubling the size of the graph.
 
     public LowResolutionTilemapBuilder(Graph graph)
     {
@@ -13,7 +14,8 @@ public class LowResolutionTilemapBuilder
 
     public LowResTilemap Generate()
     {
-        var tilemap = new LowResTilemap(11, 11); // Hardcoded for now
+        var graphDimensions = _graph.GetDimensions();
+        var tilemap = new LowResTilemap(graphDimensions.y * SizeMultiplier + 1, graphDimensions.x * SizeMultiplier + 1);
         tilemap.MapGraphToTilemap(_graph);
         return tilemap;
     }

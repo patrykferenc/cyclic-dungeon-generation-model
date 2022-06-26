@@ -42,7 +42,6 @@ public class Graph
         return IsPositionInNeighbourhood(firstNode.GetPosition(), secondNode.GetPosition());
     }
 
-    // TODO: Rewrite to more modern solution
     public static bool IsPositionInNeighbourhood((int x, int y) firstPosition, (int x, int y) secondPosition)
     {
         for (var i = 0; i < Neighbourhood.Length; i++)
@@ -68,6 +67,11 @@ public class Graph
     public List<Node> GetAllNodesOfType(NodeType type)
     {
         return _nodeGrid.ToList().FindAll(n => n.GetNodeType() == type);
+    }
+    
+    public List<Node> GetAllNodes()
+    {
+        return _nodeGrid.ToList();
     }
 
     public override string ToString()

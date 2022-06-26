@@ -3,5 +3,6 @@
 public enum DungeonTheme
 {
     Castle,
-    Cave
+    CaveSystem,
+    AbandonedCastle
 }

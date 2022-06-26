@@ -38,11 +38,11 @@ public class TilemapBuilder
 
     private void DecorateRooms()
     {
-        foreach (var area in _areas)
+        foreach (var area in _areas.Where(area => area is not Door))
         {
-            if (area is Door)
-                continue;
-
+            if (area is not Room room) continue; // This should never happen, but just in case.
+            if (room.RoomType != RoomType.Cave) continue; // For now we only decorate caves.
+            
             var decorator = new CaveDecorator(area);
             decorator.Decorate();
         }
@@ -69,7 +69,7 @@ public class TilemapBuilder
         var middlePosition = (x: tileX + SizeMultiplier / 2, y: tileY + SizeMultiplier / 2);
 
         if (lrTile.GetTileType() == LowResolutionTileType.Room)
-            _areas.Add(new Room(middlePosition, tilesInSpace, lrTile, RoomType.CastleRoom));
+            _areas.Add(new Room(middlePosition, tilesInSpace, lrTile, lrTile.GetRoomType()));
         else if (lrTile.GetTileType() == LowResolutionTileType.Door)
             _areas.Add(new Door(middlePosition, tilesInSpace, lrTile));
     }
