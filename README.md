@@ -23,7 +23,14 @@ I expect to add more features in the future and alos improve the codebase a litt
 
 ## Examples of generated dungeons
 
-TBD :))
+Depending on the set theme and attributes the model can produce different results.
+Some of the obtained results are listed here:
+
+![Big abandoned castle][./docs/images/big_abandoned.png]
+
+![Small castle][./docs/images/small_castle.png]
+
+![Big cave][./docs/images/big_cave.png]
 
 # Installation and running
 
