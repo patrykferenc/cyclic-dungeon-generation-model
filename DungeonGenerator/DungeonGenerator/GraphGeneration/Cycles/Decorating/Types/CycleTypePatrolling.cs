@@ -5,7 +5,6 @@ namespace DungeonGenerator.DungeonGenerator.GraphGeneration.Cycles.Decorating.Ty
 
 public class CycleTypePatrolling : BaseCycleType, ICycleType
 {
-    // TODO: implement the patrolling cycle type
     public void Decorate(Graph graph)
     {
         var myCycle = CycleHelpers.GetCycle(graph);
@@ -16,7 +15,6 @@ public class CycleTypePatrolling : BaseCycleType, ICycleType
         var myObstacle = new PatrollingEnemy();
         GraphBuilderHelpers.GetRandomFromList(partA).GetObstacles().Add(myObstacle);
 
-        // change to path
         TurnToPath(myCycle);
     }
 }

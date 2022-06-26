@@ -5,7 +5,8 @@ namespace DungeonGenerator.DungeonGenerator.GraphGeneration.Cycles.Decorating.Ty
 
 public class CycleTypeLockKey : BaseCycleType, ICycleType
 {
-    // TODO: implement this fr
+    // TODO: implement this 
+    // For now it's just a copy of the blocking door cycle type
     public void Decorate(Graph graph)
     {
         var myCycle = CycleHelpers.GetCycle(graph);

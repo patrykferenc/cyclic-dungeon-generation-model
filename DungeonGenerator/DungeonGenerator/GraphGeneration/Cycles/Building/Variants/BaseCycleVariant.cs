@@ -112,7 +112,7 @@ public abstract class BaseCycleVariant
             iteration++;
         }
 
-        Console.Write("After generating wandering path: \n" + Graph + '\n'); // DEBUG!
+        //Console.Write("After generating wandering path: \n" + Graph + '\n'); // DEBUG!
         return lastNode;
     }
 }

@@ -5,7 +5,6 @@ namespace DungeonGenerator.DungeonGenerator.GraphGeneration.Cycles.Decorating.Ty
 
 public class CycleTypeBlockingDoor : BaseCycleType, ICycleType
 {
-    //TODO: IMPLEMENT THIS
     public void Decorate(Graph graph)
     {
         var myCycle = CycleHelpers.GetCycle(graph);
@@ -18,5 +17,7 @@ public class CycleTypeBlockingDoor : BaseCycleType, ICycleType
         var key = new DoorKey(lockedDoor);
         GraphBuilderHelpers.GetRandomFromList(partA).GetLocks().Add(lockedDoor);
         GraphBuilderHelpers.GetRandomFromList(partB).GetKeys().Add(key);
+        
+        TurnToPath(myCycle);
     }
 }

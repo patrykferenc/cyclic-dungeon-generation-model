@@ -18,7 +18,6 @@ public class CycleTypeAlternate : BaseCycleType, ICycleType
         myObstacle = new Enemy();
         GraphBuilderHelpers.GetRandomFromList(partB).GetObstacles().Add(myObstacle);
 
-        // change to path
         TurnToPath(myCycle);
     }
 }
