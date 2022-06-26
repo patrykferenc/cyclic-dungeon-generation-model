@@ -6,7 +6,7 @@ namespace DungeonGenerator.DungeonGenerator.GraphGeneration.Themes.Types;
 
 public class AbandonedCastleTheme : IThemeType
 {
-    private const int CaveChance = 30;
+    private const int CaveChance = 40;
     private readonly ExpandedRandom _random;
     
     public AbandonedCastleTheme()
