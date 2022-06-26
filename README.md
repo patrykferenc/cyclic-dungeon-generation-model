@@ -26,11 +26,9 @@ I expect to add more features in the future and alos improve the codebase a litt
 Depending on the set theme and attributes the model can produce different results.
 Some of the obtained results are listed here:
 
-![Big abandoned castle][./docs/images/big_abandoned.png]
-
-![Small castle][./docs/images/small_castle.png]
-
-![Big cave][./docs/images/big_cave.png]
+![Big abandoned castle](https://user-images.githubusercontent.com/81482531/175813315-484c386e-ed3a-4f46-bb4f-9c864678b4cd.png)
+![Small castle](https://user-images.githubusercontent.com/81482531/175813374-e5cb38fa-e4cd-4186-a594-e38956d65160.png)
+![Big cave](https://user-images.githubusercontent.com/81482531/175813317-8d4aedbd-ba88-40ac-adf0-f2bac87619df.png)
 
 # Installation and running
 
