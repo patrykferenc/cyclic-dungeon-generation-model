@@ -5,21 +5,21 @@ This was made as a personal project during my studies on the WUT.
 
 # Notes
 
-The readme is written in English, but I do have an accopanying "paper" in Polish if you want to (and can) read it,
-it can be found in the releases section (TBD).
+The readme is written in English, but I do have an accompanying "paper" in Polish if you want to (and can) read it,
+it can be found in the [releases section](https://github.com/patrykferenc/cyclic-dungeon-generation-model/releases/tag/v0.1.0-preview).
 
 # Features
 
-This project implements the cyclic generation algorithms described in papers listed in the report (in polish).
+This project implements the cyclic generation algorithms described in the papers listed in the report (in Polish).
 The algorithm can be described in a few simple steps:
 - First, we generate a graph (laid as a grid) with empty nodes.
-- Then, we add a major cycle (connected nodes) to the graph. This way we create a two way connection between the starting room and the final room.
-- Next, we apply some rules to the cycle that decide its type - for example if it should have a patrolling monster, locked gates etc.
-- After the graph representation is complete, we scale it into a low resolution tilemap - we add doors and corridors between the rooms.
+- Then, we add a major cycle (connected nodes) to the graph. This way we create a two-way connection between the starting room and the final room.
+- Next, we apply some rules to the cycle that decide its type - for example, if it should have a patrolling monster, locked gates etc.
+- After the graph representation is complete, we scale it into a low-resolution tilemap - we add doors and corridors between the rooms.
 - The last part of the generation is to create the final tilemap. We apply certain rules to rooms to make them more interesting in shape.
 
-It is by no means a full and comprehensive way to generate an algorithm, but it can be expanded and tinkered with to get the desired result.
-I expect to add more features in the future and alos improve the codebase a little bit.
+It is by no means a full and comprehensive way to generate a dungeon, but it can be expanded and tinkered with to get the desired result.
+I expect to add more features in the future and also improve the codebase a little bit.
 
 ## Examples of generated dungeons
 
@@ -33,7 +33,7 @@ Some of the obtained results are listed here:
 # Installation and running
 
 You need to have .NET Core installed. I tested it on Windows 10, 
-and MacOS Monterey (M1) but running it on other reasonable platforms should not be a problem.
+and macOS Monterey (M1) but running it on other reasonable platforms should not be a problem.
 
 The recommended way is to just clone the repository and open it with Rider or Visual Studio. This should work out of the box.
 You run it just by running the Program.cs file.
